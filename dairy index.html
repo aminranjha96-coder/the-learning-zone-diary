@@ -1,0 +1,3340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>The Learning Zone — Daily School Diary App</title>
+  <style>
+    /* =========================================================================
+       1. SELF-CONTAINED RESET & DESIGN TOKENS (ZERO EXTERNAL CDNs)
+       ========================================================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-page: #f1f5f9;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --border-light: #e2e8f0;
+      --border-medium: #cbd5e1;
+      --brand-indigo: #3730a3;
+      --brand-emerald: #059669;
+      --brand-amber: #f59e0b;
+      --brand-rose: #e11d48;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 6px 18px rgba(15, 23, 42, 0.12);
+      --shadow-lg: 0 18px 40px rgba(15, 23, 42, 0.22);
+    }
+
+    html, body {
+      min-height: 100%;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    svg {
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    /* =========================================================================
+       2. TOP APP HEADER & NAVIGATION BAR
+       ========================================================================= */
+    .app-header {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #1d4ed8 100%);
+      color: #ffffff;
+      padding: 12px 16px;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .school-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .school-crest {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.32);
+      border: 2px solid #ffffff;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .school-crest img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .school-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      line-height: 1.2;
+    }
+
+    .school-subtitle {
+      font-size: 12px;
+      color: #c7d2fe;
+      font-weight: 600;
+    }
+
+    .header-date-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #fde047;
+    }
+
+    .nav-bar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-light);
+      padding: 8px 12px;
+      position: sticky;
+      top: 78px;
+      z-index: 25;
+      overflow-x: auto;
+    }
+
+    .nav-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab.active {
+      background: var(--brand-indigo);
+      color: #ffffff;
+      border-color: var(--brand-indigo);
+      box-shadow: 0 3px 10px rgba(55, 48, 163, 0.25);
+    }
+
+    .badge-count {
+      background: rgba(255, 255, 255, 0.24);
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .nav-tab:not(.active) .badge-count {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    /* =========================================================================
+       3. LAYOUT & CARDS
+       ========================================================================= */
+    .main-container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 16px 12px 48px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (min-width: 960px) {
+      .workspace-grid {
+        grid-template-columns: 430px 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card + .card {
+      margin-top: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-box {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .icon-indigo { background: #e0e7ff; color: #3730a3; }
+    .icon-amber { background: #fef3c7; color: #b45309; }
+    .icon-emerald { background: #d1fae5; color: #047857; }
+
+    /* =========================================================================
+       4. FORM CONTROLS & BUTTONS
+       ========================================================================= */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 440px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .req-star {
+      color: var(--brand-rose);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border-medium);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--brand-indigo);
+      box-shadow: 0 0 0 3px rgba(55, 48, 163, 0.14);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 58px;
+    }
+
+    .theme-indicator-pill {
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #ffffff;
+      background: linear-gradient(135deg, #059669, #34d399);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+    }
+
+    .theme-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fde047;
+      display: inline-block;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 11px 16px;
+      border-radius: 11px;
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: transform 0.1s ease, background-color 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: var(--brand-indigo);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(55, 48, 163, 0.24);
+    }
+
+    .btn-emerald {
+      background: var(--brand-emerald);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.28);
+    }
+
+    .btn-amber {
+      background: #f59e0b;
+      color: #1e1b4b;
+      font-weight: 800;
+    }
+
+    .btn-soft {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid var(--border-medium);
+      padding: 7px 12px;
+      font-size: 12px;
+    }
+
+    .btn-danger-soft {
+      background: #fff1f2;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    /* =========================================================================
+       5. ADDED HOMEWORK ROWS LIST (EDITOR PANEL)
+       ========================================================================= */
+    .entry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .entry-item {
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1.5px solid #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .entry-item-body {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .entry-sub-tag {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+      color: #ffffff;
+    }
+
+    .entry-hw-line {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      word-break: break-word;
+    }
+
+    .entry-detail-line {
+      font-size: 12px;
+      color: #475569;
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .mini-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #334155;
+    }
+
+    .mini-btn.del {
+      color: #be123c;
+      border-color: #fecdd3;
+      background: #fff1f2;
+    }
+
+    /* =========================================================================
+       6. EXPORT BANNER & LIGHTWEIGHT DOM LIVE MULTICOLOR DIARY PREVIEW
+          (ZERO OFFSCREEN CANVAS ALLOCATION ON LESSON ADD = ZERO WEBVIEW CRASH)
+       ========================================================================= */
+    .export-banner {
+      background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 15px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .export-banner h3 {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .export-banner p {
+      font-size: 12px;
+      color: #d1fae5;
+      margin-top: 2px;
+    }
+
+    .preview-stage {
+      background: #e2e8f0;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-xl);
+      padding: 14px 10px;
+    }
+
+    .live-diary-sheet {
+      max-width: 560px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.18);
+      border: 1px solid #cbd5e1;
+    }
+
+    .rainbow-strip {
+      height: 7px;
+      background: linear-gradient(90deg, #f43f5e 0%, #f59e0b 25%, #10b981 50%, #2563eb 75%, #8b5cf6 100%);
+    }
+
+    .diary-sheet-header {
+      padding: 16px 16px 14px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+    }
+
+    .diary-sheet-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .diary-sheet-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .diary-sheet-crest {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #ffffff;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .diary-sheet-crest img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .diary-pill-tag {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      margin-bottom: 3px;
+    }
+
+    .diary-school-heading {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      line-height: 1.15;
+    }
+
+    .diary-school-sub {
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0.94;
+    }
+
+    .diary-date-box {
+      background: rgba(15, 23, 42, 0.28);
+      border: 1.5px solid #fde047;
+      border-radius: 11px;
+      padding: 6px 11px;
+      text-align: right;
+    }
+
+    .diary-day-label {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #fde047;
+    }
+
+    .diary-date-val {
+      font-size: 12px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .diary-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 420px) {
+      .diary-meta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .diary-meta-card {
+      background: rgba(15, 23, 42, 0.30);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 10px;
+      padding: 7px 10px;
+    }
+
+    .diary-meta-lbl {
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      color: #fde047;
+    }
+
+    .diary-meta-val {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 1px;
+    }
+
+    .diary-table-head {
+      display: grid;
+      grid-template-columns: 104px 1.25fr 1fr;
+      background: #065f46;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      padding: 9px 12px;
+    }
+
+    @media (max-width: 420px) {
+      .diary-table-head {
+        grid-template-columns: 88px 1.2fr 1fr;
+        font-size: 10px;
+        padding: 8px 10px;
+      }
+    }
+
+    .diary-rows-container {
+      padding: 10px 10px 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .diary-row-card {
+      display: grid;
+      grid-template-columns: 104px 1.25fr 1fr;
+      border-radius: 11px;
+      border: 1.5px solid #cbd5e1;
+      overflow: hidden;
+      align-items: stretch;
+    }
+
+    @media (max-width: 420px) {
+      .diary-row-card {
+        grid-template-columns: 88px 1.2fr 1fr;
+      }
+    }
+
+    .diary-col-sub {
+      padding: 9px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 5px solid #2563eb;
+    }
+
+    .diary-sub-pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      word-break: break-word;
+      width: 100%;
+    }
+
+    .diary-col-hw {
+      padding: 9px 10px;
+      background: rgba(255, 255, 255, 0.82);
+      border-left: 1px solid rgba(15, 23, 42, 0.1);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0f172a;
+      word-break: break-word;
+      display: flex;
+      align-items: center;
+    }
+
+    .diary-col-det {
+      padding: 9px 10px;
+      background: rgba(255, 255, 255, 0.55);
+      border-left: 1px solid rgba(15, 23, 42, 0.1);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #334155;
+      word-break: break-word;
+      display: flex;
+      align-items: center;
+    }
+
+    .diary-sheet-footer {
+      background: #f8fafc;
+      border-top: 1px solid #cbd5e1;
+      padding: 12px 14px 14px;
+      margin-top: 8px;
+    }
+
+    .diary-note-box {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 9px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #78350f;
+    }
+
+    .diary-sign-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-top: 24px;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    .diary-sign-line {
+      border-top: 1.5px solid #64748b;
+      padding-top: 4px;
+      min-width: 105px;
+      text-align: center;
+    }
+
+    /* =========================================================================
+       7. ADMIN SETUP & ARCHIVE GRIDS
+       ========================================================================= */
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    @media (min-width: 860px) {
+      .admin-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+    }
+
+    .chip.all-sec {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+
+    .admin-list-item {
+      padding: 10px 12px;
+      border: 1px solid var(--border-light);
+      border-radius: 11px;
+      background: #f8fafc;
+      margin-bottom: 8px;
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .archive-card {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .archive-body {
+      padding: 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    /* =========================================================================
+       8. ON-DEMAND JPG EXPORT MODAL, FULL-SCREEN IMAGE & TOAST
+       ========================================================================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.86);
+      z-index: 60;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      overflow-y: auto;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 540px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      margin: auto;
+    }
+
+    .modal-head {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+      color: #ffffff;
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .modal-preview-area {
+      background: #cbd5e1;
+      padding: 14px;
+      max-height: 55vh;
+      overflow-y: auto;
+      text-align: center;
+    }
+
+    .saveable-diary-img {
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      border-radius: 14px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+      border: 2px solid #ffffff;
+      display: inline-block;
+      background: #ffffff;
+      -webkit-touch-callout: default !important;
+      -webkit-user-select: auto !important;
+      user-select: auto !important;
+      pointer-events: auto !important;
+      touch-action: auto !important;
+      cursor: zoom-in;
+    }
+
+    .modal-foot {
+      padding: 13px 16px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .modal-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .modal-tip {
+      font-size: 11.5px;
+      color: #475569;
+      margin-top: 10px;
+      background: #f8fafc;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .fullscreen-img-overlay {
+      position: fixed;
+      inset: 0;
+      background: #090d16;
+      z-index: 120;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 58px 10px 24px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .fullscreen-img-overlay.open {
+      display: flex;
+    }
+
+    .fullscreen-top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: rgba(15, 23, 42, 0.96);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      z-index: 125;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .fullscreen-raw-img {
+      width: 100%;
+      max-width: 520px;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      -webkit-touch-callout: default !important;
+      -webkit-user-select: auto !important;
+      user-select: auto !important;
+      pointer-events: auto !important;
+      touch-action: auto !important;
+    }
+
+    .toast-box {
+      position: fixed;
+      bottom: 18px;
+      right: 16px;
+      left: 16px;
+      max-width: 420px;
+      margin-left: auto;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: var(--shadow-lg);
+      z-index: 90;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      border-left: 5px solid #10b981;
+    }
+
+    .toast-box.show {
+      display: flex;
+    }
+
+    .toast-box.error {
+      border-left-color: #f43f5e;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================================
+       TOP HEADER: THE LEARNING ZONE + LIVE AUTOMATIC DATE & DAY
+       ===================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="school-brand">
+        <div class="school-crest" id="header-logo-wrap" aria-label="The Learning Zone Official Crest"></div>
+        <div>
+          <div class="school-title">The Learning Zone</div>
+          <div class="school-subtitle">Soaring To Achieve Excellence Together</div>
+        </div>
+      </div>
+
+      <div class="header-date-pill" id="header-date-badge">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span id="header-date-text">Monday, 23 Nov 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="nav-bar" aria-label="Main Sections">
+    <div class="nav-inner">
+      <button type="button" class="nav-tab active" data-tab="diary" onclick="switchTab('diary')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+        </svg>
+        Teacher Diary
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="admin" onclick="switchTab('admin')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        Admin Setup
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="archive" onclick="switchTab('archive')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        Saved Diaries
+        <span class="badge-count" id="archive-count-badge">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- =====================================================================
+       MAIN CONTAINER
+       ===================================================================== -->
+  <main class="main-container">
+
+    <!-- ===================================================================
+         TAB 1: TEACHER DAILY DIARY ENTRY & LIVE MULTICOLOR PREVIEW
+         =================================================================== -->
+    <section id="tab-diary" class="tab-panel active">
+      <div class="workspace-grid">
+
+        <!-- LEFT COLUMN: CLASS/TEACHER DETAILS + SUBJECT/HOMEWORK/DETAIL FORM -->
+        <div>
+          <!-- 1. Class, Section, Teacher & Date Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="icon-box icon-indigo">1</span>
+                Class, Section & Teacher Details
+              </div>
+              <button type="button" class="btn btn-soft" onclick="setTodayDate()">Today</button>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="select-class">Class <span class="req-star">*</span></label>
+                <select id="select-class" class="form-control" onchange="onClassChange()">
+                  <option value="Play Group">Play Group</option>
+                  <option value="Nursery">Nursery</option>
+                  <option value="KG">KG</option>
+                  <option value="Class 1" selected>Class 1</option>
+                  <option value="Class 2">Class 2</option>
+                  <option value="Class 3">Class 3</option>
+                  <option value="Class 4">Class 4</option>
+                  <option value="Class 5">Class 5</option>
+                  <option value="Class 6">Class 6</option>
+                  <option value="Class 7th">Class 7th</option>
+                  <option value="Class Pre-9th">Class Pre-9th</option>
+                  <option value="Class 9th">Class 9th</option>
+                  <option value="Class 10th">Class 10th</option>
+                </select>
+                <div id="active-class-theme-pill" class="theme-indicator-pill">
+                  <span class="theme-dot"></span>
+                  <span id="active-class-theme-text">Emerald Green Header</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="select-section">Section <span class="req-star">*</span></label>
+                <select id="select-section" class="form-control" onchange="renderLivePreview()">
+                  <option value="All Sections" selected>All Sections</option>
+                  <option value="Rose">Rose</option>
+                  <option value="Marigold">Marigold</option>
+                  <option value="Tulip">Tulip</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="select-teacher">Class Teacher <span class="req-star">*</span></label>
+                <select id="select-teacher" class="form-control" onchange="renderLivePreview()">
+                  <option value="Miss Ayesha Khan" selected>Miss Ayesha Khan</option>
+                  <option value="Sir Bilal Ahmed">Sir Bilal Ahmed</option>
+                  <option value="Miss Fatima Noor">Miss Fatima Noor</option>
+                  <option value="Sir Kamran Ali">Sir Kamran Ali</option>
+                  <option value="Miss Zara Siddiqui">Miss Zara Siddiqui</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="diary-date">Diary Date (<span id="day-display">Monday</span>)</label>
+                <input type="date" id="diary-date" class="form-control" value="2026-11-23" onchange="onDateChange()" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-footer-note">General Teacher Note / Reminder</label>
+              <input type="text" id="input-footer-note" class="form-control" value="Please check & sign your child's homework diary daily." oninput="renderLivePreview()" />
+            </div>
+          </div>
+
+          <!-- 2. Add / Edit Homework Row (Subject | Homework | Detail) -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" id="form-mode-title">
+                <span class="icon-box icon-amber">+</span>
+                Add Subject Homework & Detail
+              </div>
+              <button type="button" id="btn-cancel-edit" class="btn btn-soft" style="display:none;" onclick="cancelEdit()">Cancel</button>
+            </div>
+
+            <form id="homework-form" onsubmit="handleSaveRow(event)">
+              <input type="hidden" id="edit-row-id" value="" />
+
+              <div class="form-group">
+                <label class="form-label" for="select-subject">Subject <span class="req-star">*</span></label>
+                <select id="select-subject" class="form-control" required>
+                  <option value="sub_eng" selected>English</option>
+                  <option value="sub_math">Mathematics</option>
+                  <option value="sub_urdu">Urdu</option>
+                  <option value="sub_sci">General Science</option>
+                  <option value="sub_isl">Islamiyat</option>
+                  <option value="sub_comp">Computer Science</option>
+                  <option value="sub_sst">Social Studies</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="input-homework">Homework <span class="req-star">*</span></label>
+                <textarea id="input-homework" class="form-control" rows="2" required placeholder="e.g., Learn & Write Q/A # 1-3 on Notebook"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="input-detail">Detail (Book, Chapter, Page #, Instructions)</label>
+                <textarea id="input-detail" class="form-control" rows="2" placeholder="e.g., Unit 2: The Wise Farmer, Pg 18-19"></textarea>
+              </div>
+
+              <button type="submit" id="btn-submit-row" class="btn btn-primary btn-full">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Add Row to Diary
+              </button>
+            </form>
+          </div>
+
+          <!-- 3. Added Subjects List -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="icon-box icon-emerald" id="rows-count-badge">3</span>
+                Added Homework Rows
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="btn btn-soft" onclick="loadSampleDiary()">Sample</button>
+                <button type="button" class="btn btn-danger-soft" onclick="clearAllRows()">Clear</button>
+              </div>
+            </div>
+
+            <div id="added-rows-list" class="entry-list"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: EXPORT ACTION + LIGHTWEIGHT LIVE MULTICOLOR DIARY SHEET -->
+        <div id="live-preview-section">
+          <div class="export-banner">
+            <div>
+              <h3>Complete Diary & Create JPG</h3>
+              <p>Generates a crisp multicolor JPG ready to save to gallery or share.</p>
+            </div>
+
+            <button type="button" class="btn btn-amber" onclick="generateAndOpenJpgModal()">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Complete Diary & Create JPG
+            </button>
+          </div>
+
+          <!-- Lightweight HTML/CSS Multicolor Diary Preview -->
+          <div class="preview-stage">
+            <div class="live-diary-sheet" id="live-diary-sheet">
+              <div class="rainbow-strip"></div>
+
+              <div class="diary-sheet-header" id="live-sheet-header">
+                <div class="diary-sheet-top">
+                  <div class="diary-sheet-brand">
+                    <div class="diary-sheet-crest" id="live-sheet-crest"></div>
+                    <div>
+                      <span class="diary-pill-tag" id="live-sheet-pill">DAILY HOMEWORK DIARY</span>
+                      <div class="diary-school-heading">THE LEARNING ZONE</div>
+                      <div class="diary-school-sub" id="live-sheet-sub">CLASS 1 • DAILY HOMEWORK SCHEDULE</div>
+                    </div>
+                  </div>
+
+                  <div class="diary-date-box" id="live-sheet-datebox">
+                    <div class="diary-day-label" id="live-sheet-day">MONDAY</div>
+                    <div class="diary-date-val" id="live-sheet-date">23 Nov 2026</div>
+                  </div>
+                </div>
+
+                <div class="diary-meta-grid">
+                  <div class="diary-meta-card">
+                    <div class="diary-meta-lbl" id="live-meta-lbl1">CLASS & SECTION</div>
+                    <div class="diary-meta-val" id="live-meta-classsec">Class 1 — All Sections</div>
+                  </div>
+                  <div class="diary-meta-card">
+                    <div class="diary-meta-lbl" id="live-meta-lbl2">CLASS TEACHER</div>
+                    <div class="diary-meta-val" id="live-meta-teacher">Miss Ayesha Khan</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="diary-table-head" id="live-table-head">
+                <div>SUBJECT</div>
+                <div>HOMEWORK</div>
+                <div>DETAIL</div>
+              </div>
+
+              <div class="diary-rows-container" id="live-diary-rows"></div>
+
+              <div class="diary-sheet-footer">
+                <div class="diary-note-box" id="live-sheet-note">
+                  ★ Please check & sign your child's homework diary daily.
+                </div>
+
+                <div class="diary-sign-row">
+                  <div class="diary-sign-line">Teacher's Signature</div>
+                  <div style="font-weight:900; color:#1e1b4b;" id="live-footer-brand">THE LEARNING ZONE</div>
+                  <div class="diary-sign-line">Principal's Signature</div>
+                </div>
+              </div>
+
+              <div class="rainbow-strip"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 2: ADMIN SETUP (CLASSES/SECTIONS, SUBJECTS & COLORS, TEACHERS)
+         =================================================================== -->
+    <section id="tab-admin" class="tab-panel">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px;">
+        <div>
+          <h2 style="font-size:18px; font-weight:800;">School Admin Setup</h2>
+          <p style="font-size:12.5px; color:var(--text-muted);">Manage Classes, Header Color Schemes, Sections ("All Sections" is auto-included), Color-Coded Subjects, and Teachers.</p>
+        </div>
+        <button type="button" class="btn btn-danger-soft" onclick="resetAdminDefaults()">Reset Default Data</button>
+      </div>
+
+      <div class="admin-grid">
+        <!-- 1. Classes, Sections & Header Theme -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon-box icon-indigo">C</span>
+              Classes, Sections & Header Theme
+            </div>
+          </div>
+
+          <form onsubmit="handleAddClass(event)" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label class="form-label">Class Name (Select existing to update or type new)</label>
+              <input type="text" id="admin-new-class" class="form-control" required placeholder="e.g., Class 8th or Class 1" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sections (comma-separated)</label>
+              <input type="text" id="admin-new-sections" class="form-control" required placeholder="e.g., Limelight, Sapphire" />
+              <small style="font-size:11px; color:var(--text-muted); display:block; margin-top:3px;">"All Sections" is prepended automatically.</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="admin-class-theme">Header Format Color Scheme</label>
+              <select id="admin-class-theme" class="form-control"></select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Save Class & Header Theme</button>
+          </form>
+
+          <div id="admin-classes-list"></div>
+        </div>
+
+        <!-- 2. Subjects & Color Themes -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon-box icon-amber">S</span>
+              Subjects & Colors
+            </div>
+          </div>
+
+          <form onsubmit="handleAddSubject(event)" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label class="form-label">Subject Name</label>
+              <input type="text" id="admin-new-subject" class="form-control" required placeholder="e.g., Physics" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="admin-subject-color">Row Multicolor Theme</label>
+              <select id="admin-subject-color" class="form-control"></select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Add Subject</button>
+          </form>
+
+          <div id="admin-subjects-list"></div>
+        </div>
+
+        <!-- 3. Teachers -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon-box icon-emerald">T</span>
+              Teachers Directory
+            </div>
+          </div>
+
+          <form onsubmit="handleAddTeacher(event)" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label class="form-label">Teacher Full Name</label>
+              <input type="text" id="admin-new-teacher" class="form-control" required placeholder="e.g., Sir Usman Tariq" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Add Teacher</button>
+          </form>
+
+          <div id="admin-teachers-list"></div>
+        </div>
+      </div>
+
+      <!-- 4. School Crest Logo Customization Card -->
+      <div class="card" style="margin-top:18px;">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="icon-box icon-indigo">L</span>
+            School Crest Logo Settings
+          </div>
+          <button type="button" class="btn btn-soft" onclick="resetSchoolLogo()">Reset to Default Crest</button>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:16px;">
+          <div style="width:76px; height:76px; border-radius:50%; background:#ffffff; border:2px solid #cbd5e1; overflow:hidden; flex-shrink:0; box-shadow:var(--shadow-sm);" id="admin-logo-preview-box"></div>
+          <div style="flex:1; min-width:220px;">
+            <label class="form-label" for="admin-logo-upload">Upload Custom School Logo (Optional — Auto-resized to 160x160)</label>
+            <input type="file" id="admin-logo-upload" class="form-control" accept="image/*" onchange="handleLogoUpload(event)" style="padding:8px 10px;" />
+            <small style="font-size:11.5px; color:var(--text-muted); display:block; margin-top:4px;">
+              Built-in default is the official circular <strong>THE LEARNING ZONE</strong> crest.
+            </small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 3: SAVED DIARIES ARCHIVE (LIGHTWEIGHT METADATA — ZERO MEMORY BLOAT)
+         =================================================================== -->
+    <section id="tab-archive" class="tab-panel">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px;">
+        <div>
+          <h2 style="font-size:18px; font-weight:800;">Saved Diaries Archive</h2>
+          <p style="font-size:12.5px; color:var(--text-muted);">Re-generate HD JPGs anytime or load a past diary back into the editor.</p>
+        </div>
+        <button type="button" class="btn btn-danger-soft" onclick="clearArchive()">Clear Archive</button>
+      </div>
+
+      <div id="archive-grid" class="archive-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       ON-DEMAND HD JPG PREVIEW, MOBILE SHARE & DOWNLOAD MODAL
+       ===================================================================== -->
+  <div id="jpg-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <div>
+          <div id="modal-title" style="font-size:15px; font-weight:800;">Daily Diary JPG Ready</div>
+          <div id="modal-file-name" style="font-size:11.5px; color:#c7d2fe;">The_Learning_Zone_Diary.jpg</div>
+        </div>
+        <button type="button" class="btn btn-soft" onclick="closeJpgModal()">✕ Close</button>
+      </div>
+
+      <div class="modal-preview-area">
+        <img id="modal-preview-img" class="saveable-diary-img" src="" alt="Generated Multicolor Daily Diary JPG" onclick="openFullScreenImage()" />
+      </div>
+
+      <div class="modal-foot">
+        <div class="modal-btn-row">
+          <button type="button" class="btn btn-emerald" style="flex:1; min-width:155px;" onclick="shareOrSaveToGallery()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            Share / Save to Gallery
+          </button>
+
+          <button type="button" class="btn btn-primary" style="flex:1; min-width:145px;" onclick="downloadActiveJpg()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download JPG
+          </button>
+
+          <button type="button" class="btn btn-amber" style="width:100%;" onclick="openFullScreenImage()">
+            🔍 Open Full-Screen Image (Long-Press to Save)
+          </button>
+        </div>
+        <div class="modal-tip">
+          <strong>Save to Phone Gallery:</strong> Tap <em>"Share / Save to Gallery"</em> or press & hold your finger directly on the diary image above and tap <strong>"Save Image"</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL-SCREEN RAW IMAGE VIEWER -->
+  <div id="fullscreen-overlay" class="fullscreen-img-overlay" role="dialog" aria-modal="true" aria-label="Full Screen Diary Image">
+    <div class="fullscreen-top-bar">
+      <span style="font-size:12px; font-weight:800; color:#fde047;">Press & hold finger on image → Save Image</span>
+      <button type="button" class="btn btn-soft" style="padding:5px 12px;" onclick="closeFullScreenImage()">✕ Done</button>
+    </div>
+    <img id="fullscreen-raw-img" class="fullscreen-raw-img" src="" alt="Full Screen Daily Homework Diary JPG" />
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast-box" class="toast-box" role="status" aria-live="polite">
+    <span id="toast-msg">Notification</span>
+  </div>
+
+  <!-- =====================================================================
+       ES5-COMPATIBLE MEMORY-SAFE JAVASCRIPT (ZERO EXTERNAL DEPENDENCIES)
+       ===================================================================== -->
+  <script>
+    // -----------------------------------------------------------------------
+    // 1. SAFE STORAGE WRAPPER (NEVER THROWS QUOTA OR SECURITY ERRORS)
+    // -----------------------------------------------------------------------
+    var memoryStorageFallback = {};
+
+    function safeStorageGet(key) {
+      try {
+        if (window.localStorage) {
+          var val = window.localStorage.getItem(key);
+          if (val !== null) return val;
+        }
+      } catch (e) {}
+      return Object.prototype.hasOwnProperty.call(memoryStorageFallback, key)
+        ? memoryStorageFallback[key]
+        : null;
+    }
+
+    function safeStorageSet(key, value) {
+      memoryStorageFallback[key] = value;
+      try {
+        if (window.localStorage) {
+          window.localStorage.setItem(key, value);
+        }
+      } catch (e) {}
+    }
+
+    // -----------------------------------------------------------------------
+    // 2. CLASS HEADER COLOR SCHEMES (13 DISTINCT SCHEMES) & SUBJECT PALETTES
+    // -----------------------------------------------------------------------
+    var STORAGE_KEYS = {
+      ADMIN: 'tlz_diary_admin_v3',
+      ROWS: 'tlz_diary_rows_v3',
+      ARCHIVE: 'tlz_diary_archive_v3',
+      LOGO: 'tlz_diary_logo_v3'
+    };
+
+    var customLogoDataUrl = '';
+    var customLogoImageObj = null;
+
+    var CLASS_HEADER_THEMES = {
+      pg_coral:     { label: 'Coral Pink (Play Group)',              gradStart: '#e11d48', gradEnd: '#fb7185', tableBar: '#9f1239', accent: '#fde047', pillBg: '#fef08a', pillText: '#881337', subText: '#ffe4e6' },
+      nursery_sun:  { label: 'Sunny Amber (Nursery)',                gradStart: '#d97706', gradEnd: '#fbbf24', tableBar: '#92400e', accent: '#ffffff', pillBg: '#1e1b4b', pillText: '#fde047', subText: '#fef3c7' },
+      kg_cyan:      { label: 'Sky Cyan (KG)',                        gradStart: '#0284c7', gradEnd: '#38bdf8', tableBar: '#075985', accent: '#fde047', pillBg: '#fef08a', pillText: '#0c4a6e', subText: '#e0f2fe' },
+      c1_emerald:   { label: 'Emerald Green (Class 1)',              gradStart: '#059669', gradEnd: '#34d399', tableBar: '#065f46', accent: '#fde047', pillBg: '#fef08a', pillText: '#064e3b', subText: '#d1fae5' },
+      c2_teal:      { label: 'Deep Teal (Class 2)',                  gradStart: '#0d9488', gradEnd: '#2dd4bf', tableBar: '#115e59', accent: '#fcd34d', pillBg: '#fef3c7', pillText: '#134e4a', subText: '#ccfbf1' },
+      c3_cobalt:    { label: 'Cobalt Blue (Class 3)',                gradStart: '#2563eb', gradEnd: '#60a5fa', tableBar: '#1e3a8a', accent: '#fbbf24', pillBg: '#fde047', pillText: '#1e3a8a', subText: '#dbeafe' },
+      c4_indigo:    { label: 'Royal Indigo (Class 4)',               gradStart: '#4338ca', gradEnd: '#818cf8', tableBar: '#1e1b4b', accent: '#fbbf24', pillBg: '#fde047', pillText: '#1e1b4b', subText: '#e0e7ff' },
+      c5_purple:    { label: 'Vivid Purple (Class 5)',               gradStart: '#7c3aed', gradEnd: '#a78bfa', tableBar: '#4c1d95', accent: '#fcd34d', pillBg: '#fef08a', pillText: '#4c1d95', subText: '#ede9fe' },
+      c6_magenta:   { label: 'Berry Magenta (Class 6)',              gradStart: '#c026d3', gradEnd: '#e879f9', tableBar: '#701a75', accent: '#fde047', pillBg: '#fef08a', pillText: '#701a75', subText: '#fae8ff' },
+      c7_crimson:   { label: 'Ruby Crimson (Class 7th)',             gradStart: '#be123c', gradEnd: '#f43f5e', tableBar: '#881337', accent: '#fde047', pillBg: '#fef08a', pillText: '#881337', subText: '#ffe4e6' },
+      pre9_steel:   { label: 'Slate Steel (Class Pre-9th)',          gradStart: '#334155', gradEnd: '#64748b', tableBar: '#0f172a', accent: '#fbbf24', pillBg: '#fef3c7', pillText: '#0f172a', subText: '#e2e8f0' },
+      c9_navy:      { label: 'Executive Navy (Class 9th)',           gradStart: '#1e3a8a', gradEnd: '#3b82f6', tableBar: '#0f172a', accent: '#fbbf24', pillBg: '#fbbf24', pillText: '#0f172a', subText: '#dbeafe' },
+      c10_burgundy: { label: 'Imperial Burgundy & Gold (Class 10th)',gradStart: '#7f1d1d', gradEnd: '#b91c1c', tableBar: '#450a0a', accent: '#fbbf24', pillBg: '#fbbf24', pillText: '#450a0a', subText: '#fee2e2' }
+    };
+
+    var CLASS_HEADER_THEME_KEYS = [
+      'pg_coral', 'nursery_sun', 'kg_cyan', 'c1_emerald', 'c2_teal',
+      'c3_cobalt', 'c4_indigo', 'c5_purple', 'c6_magenta', 'c7_crimson',
+      'pre9_steel', 'c9_navy', 'c10_burgundy'
+    ];
+
+    var COLOR_PALETTES = {
+      blue:    { label: 'Royal Blue',     bg: '#eff6ff', border: '#93c5fd', badge: '#1d4ed8', stripe: '#2563eb' },
+      emerald: { label: 'Emerald Green',  bg: '#ecfdf5', border: '#6ee7b7', badge: '#047857', stripe: '#10b981' },
+      amber:   { label: 'Golden Amber',   bg: '#fffbeb', border: '#fcd34d', badge: '#b45309', stripe: '#f59e0b' },
+      rose:    { label: 'Crimson Rose',   bg: '#fff1f2', border: '#fda4af', badge: '#be123c', stripe: '#f43f5e' },
+      purple:  { label: 'Vivid Purple',   bg: '#f5f3ff', border: '#c4b5fd', badge: '#6d28d9', stripe: '#8b5cf6' },
+      teal:    { label: 'Ocean Teal',     bg: '#f0fdfa', border: '#5eead4', badge: '#0f766e', stripe: '#14b8a6' },
+      orange:  { label: 'Sunset Orange',  bg: '#fff7ed', border: '#fdba74', badge: '#c2410c', stripe: '#f97316' },
+      indigo:  { label: 'Deep Indigo',    bg: '#eef2ff', border: '#a5b4fc', badge: '#3730a3', stripe: '#4f46e5' },
+      pink:    { label: 'Magenta Pink',   bg: '#fdf2f8', border: '#f9a8d4', badge: '#be185d', stripe: '#ec4899' }
+    };
+
+    var DEFAULT_CLASSES = [
+      { name: 'Play Group',    theme: 'pg_coral',     sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'] },
+      { name: 'Nursery',       theme: 'nursery_sun',  sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'] },
+      { name: 'KG',            theme: 'kg_cyan',      sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'] },
+      { name: 'Class 1',       theme: 'c1_emerald',   sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'] },
+      { name: 'Class 2',       theme: 'c2_teal',      sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'] },
+      { name: 'Class 3',       theme: 'c3_cobalt',    sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'] },
+      { name: 'Class 4',       theme: 'c4_indigo',    sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'] },
+      { name: 'Class 5',       theme: 'c5_purple',    sections: ['All Sections', 'Limelight', 'Sapphire'] },
+      { name: 'Class 6',       theme: 'c6_magenta',   sections: ['All Sections', 'Limelight', 'Sapphire'] },
+      { name: 'Class 7th',     theme: 'c7_crimson',   sections: ['All Sections', 'Limelight', 'Sapphire'] },
+      { name: 'Class Pre-9th', theme: 'pre9_steel',   sections: ['All Sections', 'Biology Group', 'Computer Group'] },
+      { name: 'Class 9th',     theme: 'c9_navy',      sections: ['All Sections', 'Biology Group', 'Computer Group'] },
+      { name: 'Class 10th',    theme: 'c10_burgundy', sections: ['All Sections', 'Biology Group', 'Computer Group'] }
+    ];
+
+    var DEFAULT_SUBJECTS = [
+      { id: 'sub_eng',  name: 'English',          color: 'blue' },
+      { id: 'sub_math', name: 'Mathematics',      color: 'emerald' },
+      { id: 'sub_urdu', name: 'Urdu',             color: 'amber' },
+      { id: 'sub_sci',  name: 'General Science',  color: 'purple' },
+      { id: 'sub_isl',  name: 'Islamiyat',        color: 'teal' },
+      { id: 'sub_comp', name: 'Computer Science', color: 'indigo' },
+      { id: 'sub_sst',  name: 'Social Studies',   color: 'rose' }
+    ];
+
+    var DEFAULT_TEACHERS = [
+      'Miss Ayesha Khan',
+      'Sir Bilal Ahmed',
+      'Miss Fatima Noor',
+      'Sir Kamran Ali',
+      'Miss Zara Siddiqui'
+    ];
+
+    var SAMPLE_DIARY_ROWS = [
+      {
+        id: 'row_sample_1',
+        subjectId: 'sub_eng',
+        homework: 'Learn & Write Q/A # 1 to 3 on Homework Notebook.',
+        detail: 'Unit 2: The Wise Farmer, Book Pg 18-19'
+      },
+      {
+        id: 'row_sample_2',
+        subjectId: 'sub_math',
+        homework: 'Solve Exercise 2.4 (Q # 1 to 5) neatly.',
+        detail: 'Chapter 2: Addition & Subtraction, Pg 34'
+      },
+      {
+        id: 'row_sample_3',
+        subjectId: 'sub_sci',
+        homework: 'Draw & label parts of a flowering plant.',
+        detail: 'Lesson 3: Plant Life, Workbook Pg 12'
+      }
+    ];
+
+    // -----------------------------------------------------------------------
+    // 3. APPLICATION STATE & STORAGE LOADERS
+    // -----------------------------------------------------------------------
+    var adminState = { classes: [], subjects: [], teachers: [] };
+    var diaryRows = [];
+    var archiveList = [];
+    var activeExport = { dataUrl: '', blob: null, filename: 'The_Learning_Zone_Diary.jpg' };
+    var toastTimer = null;
+
+    function cloneObj(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function getHeaderThemeForClass(className) {
+      var i;
+      for (i = 0; i < adminState.classes.length; i++) {
+        if (adminState.classes[i].name === className) {
+          var key = adminState.classes[i].theme;
+          if (key && CLASS_HEADER_THEMES[key]) {
+            return CLASS_HEADER_THEMES[key];
+          }
+          var fallbackKey = CLASS_HEADER_THEME_KEYS[i % CLASS_HEADER_THEME_KEYS.length];
+          return CLASS_HEADER_THEMES[fallbackKey];
+        }
+      }
+      return CLASS_HEADER_THEMES.c1_emerald;
+    }
+
+    function loadAllState() {
+      var rawAdmin = safeStorageGet(STORAGE_KEYS.ADMIN);
+      var loadedAdmin = null;
+      if (rawAdmin) {
+        try {
+          loadedAdmin = JSON.parse(rawAdmin);
+        } catch (e) {
+          loadedAdmin = null;
+        }
+      }
+
+      if (loadedAdmin && loadedAdmin.classes && loadedAdmin.classes.length > 0) {
+        var idx;
+        for (idx = 0; idx < loadedAdmin.classes.length; idx++) {
+          var c = loadedAdmin.classes[idx];
+          if (!c.sections || !c.sections.length) c.sections = ['All Sections'];
+          if (c.sections.indexOf('All Sections') === -1) {
+            c.sections.unshift('All Sections');
+          }
+          if (!c.theme || !CLASS_HEADER_THEMES[c.theme]) {
+            c.theme = CLASS_HEADER_THEME_KEYS[idx % CLASS_HEADER_THEME_KEYS.length];
+          }
+        }
+        adminState.classes = loadedAdmin.classes;
+        adminState.subjects = (loadedAdmin.subjects && loadedAdmin.subjects.length > 0)
+          ? loadedAdmin.subjects
+          : cloneObj(DEFAULT_SUBJECTS);
+        adminState.teachers = (loadedAdmin.teachers && loadedAdmin.teachers.length > 0)
+          ? loadedAdmin.teachers
+          : DEFAULT_TEACHERS.slice();
+      } else {
+        adminState = {
+          classes: cloneObj(DEFAULT_CLASSES),
+          subjects: cloneObj(DEFAULT_SUBJECTS),
+          teachers: DEFAULT_TEACHERS.slice()
+        };
+        saveAdminStorage();
+      }
+
+      var rawRows = safeStorageGet(STORAGE_KEYS.ROWS);
+      if (rawRows !== null) {
+        try {
+          var parsedRows = JSON.parse(rawRows);
+          diaryRows = (parsedRows && parsedRows.length !== undefined) ? parsedRows : [];
+        } catch (e2) {
+          diaryRows = cloneObj(SAMPLE_DIARY_ROWS);
+        }
+      } else {
+        diaryRows = cloneObj(SAMPLE_DIARY_ROWS);
+        saveRowsStorage();
+      }
+
+      var rawArchive = safeStorageGet(STORAGE_KEYS.ARCHIVE);
+      if (rawArchive) {
+        try {
+          var parsedArchive = JSON.parse(rawArchive);
+          archiveList = (parsedArchive && parsedArchive.length !== undefined) ? parsedArchive : [];
+        } catch (e3) {
+          archiveList = [];
+        }
+      } else {
+        archiveList = [];
+      }
+
+      var savedLogo = safeStorageGet(STORAGE_KEYS.LOGO);
+      if (savedLogo) {
+        customLogoDataUrl = savedLogo;
+        preloadCustomLogoImage(savedLogo, false);
+      } else {
+        customLogoDataUrl = '';
+        customLogoImageObj = null;
+      }
+    }
+
+    function saveAdminStorage() {
+      safeStorageSet(STORAGE_KEYS.ADMIN, JSON.stringify(adminState));
+    }
+
+    function saveRowsStorage() {
+      safeStorageSet(STORAGE_KEYS.ROWS, JSON.stringify(diaryRows));
+    }
+
+    function saveArchiveStorage() {
+      safeStorageSet(STORAGE_KEYS.ARCHIVE, JSON.stringify(archiveList));
+    }
+
+    // -----------------------------------------------------------------------
+    // 4. OFFICIAL CIRCULAR CREST LOGO (LIGHTWEIGHT SVG + MEMORY-SAFE UPLOAD)
+    // -----------------------------------------------------------------------
+    function getDefaultLearningZoneSvg(sizePx, uid) {
+      var s = sizePx || 52;
+      var idTag = uid || 'main';
+      return (
+        '<svg width="' + s + '" height="' + s + '" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">' +
+          '<defs>' +
+            '<path id="tlzTop_' + idTag + '" d="M 30,150 A 120,120 0 1,1 270,150" />' +
+            '<path id="tlzUp_' + idTag + '" d="M 55,150 A 95,95 0 1,1 245,150" />' +
+            '<path id="tlzLow_' + idTag + '" d="M 48,155 A 102,102 0 0,0 252,155" />' +
+          '</defs>' +
+          '<circle cx="150" cy="150" r="146" fill="#E1252B" />' +
+          '<circle cx="150" cy="150" r="113" fill="#FFFFFF" />' +
+          '<rect x="37" y="132" width="226" height="36" fill="#122C6F" />' +
+          '<rect x="37" y="128" width="226" height="4" fill="#F5A623" />' +
+          '<rect x="37" y="168" width="226" height="4" fill="#F5A623" />' +
+          '<circle cx="150" cy="150" r="84" fill="#FFFFFF" stroke="#F5A623" stroke-width="6" />' +
+          '<text fill="#FFFFFF" font-family="Georgia, serif" font-weight="900" font-size="25" letter-spacing="1.5">' +
+            '<textPath href="#tlzTop_' + idTag + '" startOffset="50%" text-anchor="middle">THE LEARNING ZONE</textPath>' +
+          '</text>' +
+          '<text fill="#111827" font-family="Arial, sans-serif" font-weight="800" font-size="13.5" letter-spacing="0.8">' +
+            '<textPath href="#tlzUp_' + idTag + '" startOffset="50%" text-anchor="middle">FAITH DISCIPLINE UNITY</textPath>' +
+          '</text>' +
+          '<text fill="#111827" font-family="Arial, sans-serif" font-weight="800" font-size="12.5" letter-spacing="0.6">' +
+            '<textPath href="#tlzLow_' + idTag + '" startOffset="50%" text-anchor="middle">RESPECT PASSION CREATIVITY</textPath>' +
+          '</text>' +
+          '<polygon points="150,86 196,105 150,121 104,105" fill="#122C6F" />' +
+          '<line x1="114" y1="108" x2="114" y2="133" stroke="#122C6F" stroke-width="3" />' +
+          '<polygon points="114,132 109,143 119,143" fill="#122C6F" />' +
+          '<path d="M 124,118 L 176,118 L 176,144 C 176,162 150,174 150,174 C 150,174 124,162 124,144 Z" fill="#FFFFFF" stroke="#122C6F" stroke-width="6" />' +
+          '<path d="M 150,124 L 162,146 L 157,163 L 143,163 L 138,146 Z" fill="#A67135" stroke="#6B4419" stroke-width="1.5" />' +
+          '<line x1="150" y1="125" x2="150" y2="147" stroke="#4A2E0E" stroke-width="2" />' +
+          '<circle cx="150" cy="148" r="3" fill="#4A2E0E" />' +
+          '<path d="M 148,180 C 134,173 114,173 98,179 C 115,182 133,184 148,188 Z" fill="#39A949" />' +
+          '<path d="M 152,180 C 166,173 186,173 202,179 C 185,182 167,184 152,188 Z" fill="#39A949" />' +
+          '<path d="M 147,174 C 136,167 121,166 110,171 C 123,173 135,175 147,179 Z" fill="#39A949" />' +
+          '<path d="M 153,174 C 164,167 179,166 190,171 C 177,173 165,175 153,179 Z" fill="#39A949" />' +
+        '</svg>'
+      );
+    }
+
+    function updateLogoDisplays() {
+      var headerWrap = document.getElementById('header-logo-wrap');
+      var sheetCrest = document.getElementById('live-sheet-crest');
+      var adminBox = document.getElementById('admin-logo-preview-box');
+
+      if (customLogoDataUrl) {
+        if (headerWrap) headerWrap.innerHTML = '<img src="' + customLogoDataUrl + '" alt="School Logo" />';
+        if (sheetCrest) sheetCrest.innerHTML = '<img src="' + customLogoDataUrl + '" alt="School Logo" />';
+        if (adminBox) adminBox.innerHTML = '<img src="' + customLogoDataUrl + '" alt="School Logo" style="width:100%; height:100%; object-fit:cover; display:block;" />';
+      } else {
+        if (headerWrap) headerWrap.innerHTML = getDefaultLearningZoneSvg(54, 'hdr');
+        if (sheetCrest) sheetCrest.innerHTML = getDefaultLearningZoneSvg(52, 'sht');
+        if (adminBox) adminBox.innerHTML = getDefaultLearningZoneSvg(76, 'adm');
+      }
+    }
+
+    function preloadCustomLogoImage(dataUrl, shouldRefresh) {
+      if (!dataUrl) {
+        customLogoImageObj = null;
+        updateLogoDisplays();
+        if (shouldRefresh) renderLivePreview();
+        return;
+      }
+      var img = new Image();
+      img.onload = function () {
+        customLogoImageObj = img;
+        updateLogoDisplays();
+        if (shouldRefresh) renderLivePreview();
+      };
+      img.onerror = function () {
+        customLogoImageObj = null;
+        customLogoDataUrl = '';
+        updateLogoDisplays();
+        if (shouldRefresh) renderLivePreview();
+      };
+      img.src = dataUrl;
+    }
+
+    function handleLogoUpload(e) {
+      var file = e.target.files && e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        var tempImg = new Image();
+        tempImg.onload = function () {
+          // Downscale logo to 160x160 max so memory remains ultra-lightweight
+          var c = document.createElement('canvas');
+          c.width = 160;
+          c.height = 160;
+          var cx = c.getContext('2d');
+          cx.fillStyle = '#ffffff';
+          cx.fillRect(0, 0, 160, 160);
+          cx.drawImage(tempImg, 0, 0, 160, 160);
+          var smallDataUrl = c.toDataURL('image/jpeg', 0.88);
+          c.width = 0;
+          c.height = 0;
+
+          customLogoDataUrl = smallDataUrl;
+          safeStorageSet(STORAGE_KEYS.LOGO, smallDataUrl);
+          preloadCustomLogoImage(smallDataUrl, true);
+          showToast('Custom school logo updated!');
+        };
+        tempImg.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetSchoolLogo() {
+      customLogoDataUrl = '';
+      customLogoImageObj = null;
+      safeStorageSet(STORAGE_KEYS.LOGO, '');
+      var uploadInput = document.getElementById('admin-logo-upload');
+      if (uploadInput) uploadInput.value = '';
+      updateLogoDisplays();
+      renderLivePreview();
+      showToast('Restored default THE LEARNING ZONE crest!');
+    }
+
+    // -----------------------------------------------------------------------
+    // 5. AUTOMATIC DATE & DAY HELPERS (ZERO REGEX)
+    // -----------------------------------------------------------------------
+    var DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    function padTwo(num) {
+      return num < 10 ? '0' + num : String(num);
+    }
+
+    function getTodayISO() {
+      var now = new Date();
+      return now.getFullYear() + '-' + padTwo(now.getMonth() + 1) + '-' + padTwo(now.getDate());
+    }
+
+    function parseDateInfo(isoStr) {
+      var str = String(isoStr || '');
+      var parts = str.split('-');
+      var dt;
+      if (parts.length === 3) {
+        dt = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      } else {
+        dt = new Date();
+      }
+      if (isNaN(dt.getTime())) {
+        dt = new Date();
+      }
+      var dayName = DAY_NAMES[dt.getDay()];
+      var dd = padTwo(dt.getDate());
+      var mon = MONTH_NAMES[dt.getMonth()];
+      var yyyy = dt.getFullYear();
+      return {
+        dayName: dayName,
+        shortDate: dd + ' ' + mon + ' ' + yyyy,
+        fullDisplay: dayName + ', ' + dd + ' ' + mon + ' ' + yyyy
+      };
+    }
+
+    function updateHeaderAndDayDisplay() {
+      var dateInput = document.getElementById('diary-date');
+      var iso = (dateInput && dateInput.value) ? dateInput.value : getTodayISO();
+      var info = parseDateInfo(iso);
+
+      var headerText = document.getElementById('header-date-text');
+      if (headerText) headerText.textContent = info.fullDisplay;
+
+      var dayDisplay = document.getElementById('day-display');
+      if (dayDisplay) dayDisplay.textContent = info.dayName;
+    }
+
+    function setTodayDate() {
+      var dateInput = document.getElementById('diary-date');
+      if (dateInput) dateInput.value = getTodayISO();
+      updateHeaderAndDayDisplay();
+      renderLivePreview();
+    }
+
+    function onDateChange() {
+      updateHeaderAndDayDisplay();
+      renderLivePreview();
+    }
+
+    // -----------------------------------------------------------------------
+    // 6. DROPDOWNS & CASCADING CLASS -> SECTION SELECTION
+    // -----------------------------------------------------------------------
+    function updateActiveClassThemePill(className) {
+      var pill = document.getElementById('active-class-theme-pill');
+      var text = document.getElementById('active-class-theme-text');
+      if (!pill || !text) return;
+      var theme = getHeaderThemeForClass(className);
+      pill.style.background = 'linear-gradient(135deg, ' + theme.gradStart + ', ' + theme.gradEnd + ')';
+      var shortLabel = theme.label.split(' (')[0];
+      text.textContent = shortLabel + ' Header';
+    }
+
+    function populateDropdowns() {
+      var i;
+      var classSel = document.getElementById('select-class');
+      var prevClass = classSel.value;
+      var classOpts = '';
+      for (i = 0; i < adminState.classes.length; i++) {
+        var cName = adminState.classes[i].name;
+        classOpts += '<option value="' + escapeHtml(cName) + '">' + escapeHtml(cName) + '</option>';
+      }
+      classSel.innerHTML = classOpts;
+
+      var hasPrev = false;
+      for (i = 0; i < adminState.classes.length; i++) {
+        if (adminState.classes[i].name === prevClass) {
+          hasPrev = true;
+          break;
+        }
+      }
+
+      if (hasPrev) {
+        classSel.value = prevClass;
+      } else if (adminState.classes.length > 0) {
+        var targetCls = adminState.classes[0].name;
+        for (i = 0; i < adminState.classes.length; i++) {
+          if (adminState.classes[i].name === 'Class 1') {
+            targetCls = 'Class 1';
+            break;
+          }
+        }
+        classSel.value = targetCls;
+      }
+
+      onClassChange(false);
+
+      var teacherSel = document.getElementById('select-teacher');
+      var prevTeacher = teacherSel.value;
+      var teacherOpts = '';
+      for (i = 0; i < adminState.teachers.length; i++) {
+        var tName = adminState.teachers[i];
+        teacherOpts += '<option value="' + escapeHtml(tName) + '">' + escapeHtml(tName) + '</option>';
+      }
+      teacherSel.innerHTML = teacherOpts;
+      if (prevTeacher && adminState.teachers.indexOf(prevTeacher) !== -1) {
+        teacherSel.value = prevTeacher;
+      } else if (adminState.teachers.length > 0) {
+        teacherSel.value = adminState.teachers[0];
+      }
+
+      var subSel = document.getElementById('select-subject');
+      var prevSub = subSel.value;
+      var subOpts = '';
+      var hasPrevSub = false;
+      for (i = 0; i < adminState.subjects.length; i++) {
+        var subObj = adminState.subjects[i];
+        if (subObj.id === prevSub) hasPrevSub = true;
+        subOpts += '<option value="' + escapeHtml(subObj.id) + '">' + escapeHtml(subObj.name) + '</option>';
+      }
+      subSel.innerHTML = subOpts;
+      if (hasPrevSub) {
+        subSel.value = prevSub;
+      } else if (adminState.subjects.length > 0) {
+        subSel.value = adminState.subjects[0].id;
+      }
+
+      var classThemeSel = document.getElementById('admin-class-theme');
+      if (classThemeSel) {
+        var ctOpts = '';
+        for (i = 0; i < CLASS_HEADER_THEME_KEYS.length; i++) {
+          var tk = CLASS_HEADER_THEME_KEYS[i];
+          ctOpts += '<option value="' + tk + '">' + escapeHtml(CLASS_HEADER_THEMES[tk].label) + '</option>';
+        }
+        classThemeSel.innerHTML = ctOpts;
+      }
+
+      var colorSel = document.getElementById('admin-subject-color');
+      if (colorSel) {
+        var palKeys = Object.keys(COLOR_PALETTES);
+        var scOpts = '';
+        for (i = 0; i < palKeys.length; i++) {
+          var pk = palKeys[i];
+          scOpts += '<option value="' + pk + '">' + escapeHtml(COLOR_PALETTES[pk].label) + '</option>';
+        }
+        colorSel.innerHTML = scOpts;
+      }
+    }
+
+    function onClassChange(shouldRender) {
+      if (typeof shouldRender === 'undefined') shouldRender = true;
+      var classSel = document.getElementById('select-class');
+      var secSel = document.getElementById('select-section');
+      var selectedClassName = classSel.value;
+
+      var clsObj = adminState.classes[0];
+      var i;
+      for (i = 0; i < adminState.classes.length; i++) {
+        if (adminState.classes[i].name === selectedClassName) {
+          clsObj = adminState.classes[i];
+          break;
+        }
+      }
+
+      var secs = (clsObj && clsObj.sections) ? clsObj.sections : ['All Sections'];
+      updateActiveClassThemePill(selectedClassName);
+
+      var prevSec = secSel.value;
+      var secOpts = '';
+      for (i = 0; i < secs.length; i++) {
+        secOpts += '<option value="' + escapeHtml(secs[i]) + '">' + escapeHtml(secs[i]) + '</option>';
+      }
+      secSel.innerHTML = secOpts;
+
+      if (prevSec && secs.indexOf(prevSec) !== -1) {
+        secSel.value = prevSec;
+      } else {
+        secSel.value = secs[0];
+      }
+
+      if (shouldRender) {
+        renderLivePreview();
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // 7. HOMEWORK ROWS CRUD (SUBJECT | HOMEWORK | DETAIL)
+    // -----------------------------------------------------------------------
+    function findSubjectById(subId) {
+      var i;
+      for (i = 0; i < adminState.subjects.length; i++) {
+        if (adminState.subjects[i].id === subId) {
+          return adminState.subjects[i];
+        }
+      }
+      return { id: subId, name: 'Subject', color: 'blue' };
+    }
+
+    function handleSaveRow(e) {
+      e.preventDefault();
+      var editId = document.getElementById('edit-row-id').value;
+      var subjectId = document.getElementById('select-subject').value;
+      var homework = document.getElementById('input-homework').value.trim();
+      var detail = document.getElementById('input-detail').value.trim();
+
+      if (!subjectId || !homework) {
+        showToast('Please select a Subject and enter Homework.', true);
+        return;
+      }
+
+      if (editId) {
+        var i;
+        for (i = 0; i < diaryRows.length; i++) {
+          if (diaryRows[i].id === editId) {
+            diaryRows[i] = { id: editId, subjectId: subjectId, homework: homework, detail: detail };
+            break;
+          }
+        }
+        cancelEdit();
+        showToast('Homework row updated!');
+      } else {
+        diaryRows.push({
+          id: 'row_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+          subjectId: subjectId,
+          homework: homework,
+          detail: detail
+        });
+        document.getElementById('input-homework').value = '';
+        document.getElementById('input-detail').value = '';
+        showToast('Subject homework added to diary!');
+      }
+
+      saveRowsStorage();
+      renderAddedRows();
+      renderLivePreview();
+    }
+
+    function startEditRow(id) {
+      var row = null;
+      var i;
+      for (i = 0; i < diaryRows.length; i++) {
+        if (diaryRows[i].id === id) {
+          row = diaryRows[i];
+          break;
+        }
+      }
+      if (!row) return;
+
+      document.getElementById('edit-row-id').value = row.id;
+      document.getElementById('select-subject').value = row.subjectId;
+      document.getElementById('input-homework').value = row.homework;
+      document.getElementById('input-detail').value = row.detail || '';
+
+      document.getElementById('form-mode-title').innerHTML = '<span class="icon-box icon-indigo">✎</span> Edit Homework Row';
+      document.getElementById('btn-submit-row').textContent = 'Update Homework Row';
+      document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
+    }
+
+    function cancelEdit() {
+      document.getElementById('edit-row-id').value = '';
+      document.getElementById('input-homework').value = '';
+      document.getElementById('input-detail').value = '';
+      document.getElementById('form-mode-title').innerHTML = '<span class="icon-box icon-amber">+</span> Add Subject Homework & Detail';
+      document.getElementById('btn-submit-row').innerHTML =
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+        '<line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add Row to Diary';
+      document.getElementById('btn-cancel-edit').style.display = 'none';
+    }
+
+    function deleteRow(id) {
+      var nextRows = [];
+      var i;
+      for (i = 0; i < diaryRows.length; i++) {
+        if (diaryRows[i].id !== id) {
+          nextRows.push(diaryRows[i]);
+        }
+      }
+      diaryRows = nextRows;
+      if (document.getElementById('edit-row-id').value === id) {
+        cancelEdit();
+      }
+      saveRowsStorage();
+      renderAddedRows();
+      renderLivePreview();
+      showToast('Row removed.');
+    }
+
+    function loadSampleDiary() {
+      diaryRows = cloneObj(SAMPLE_DIARY_ROWS);
+      cancelEdit();
+      saveRowsStorage();
+      renderAddedRows();
+      renderLivePreview();
+      showToast('Sample homework rows loaded!');
+    }
+
+    function clearAllRows() {
+      diaryRows = [];
+      cancelEdit();
+      saveRowsStorage();
+      renderAddedRows();
+      renderLivePreview();
+      showToast('All rows cleared.');
+    }
+
+    function renderAddedRows() {
+      var listEl = document.getElementById('added-rows-list');
+      var badgeEl = document.getElementById('rows-count-badge');
+      badgeEl.textContent = diaryRows.length;
+
+      if (diaryRows.length === 0) {
+        listEl.innerHTML =
+          '<div style="text-align:center; padding:18px 10px; color:#64748b; font-size:13px; background:#f8fafc; border-radius:12px; border:1px dashed #cbd5e1;">' +
+          'No homework rows added yet. Use the form above to add Subject, Homework & Detail.' +
+          '</div>';
+        return;
+      }
+
+      var html = '';
+      var i;
+      for (i = 0; i < diaryRows.length; i++) {
+        var row = diaryRows[i];
+        var sub = findSubjectById(row.subjectId);
+        var pal = COLOR_PALETTES[sub.color] || COLOR_PALETTES.blue;
+        html +=
+          '<div class="entry-item" style="background:' + pal.bg + '; border-color:' + pal.border + ';">' +
+            '<div class="entry-item-body">' +
+              '<span class="entry-sub-tag" style="background:' + pal.badge + ';">' + (i + 1) + '. ' + escapeHtml(sub.name) + '</span>' +
+              '<div class="entry-hw-line">Homework: ' + escapeHtml(row.homework) + '</div>' +
+              (row.detail ? '<div class="entry-detail-line">Detail: ' + escapeHtml(row.detail) + '</div>' : '') +
+            '</div>' +
+            '<div class="entry-actions">' +
+              '<button type="button" class="mini-btn" title="Edit" onclick="startEditRow(\'' + row.id + '\')">✎</button>' +
+              '<button type="button" class="mini-btn del" title="Delete" onclick="deleteRow(\'' + row.id + '\')">✕</button>' +
+            '</div>' +
+          '</div>';
+      }
+      listEl.innerHTML = html;
+    }
+
+    // -----------------------------------------------------------------------
+    // 8. LIGHTWEIGHT DOM LIVE PREVIEW (INSTANT, ZERO GPU/CANVAS OVERHEAD)
+    // -----------------------------------------------------------------------
+    function renderLivePreview() {
+      var className = document.getElementById('select-class').value || 'Class 1';
+      var sectionName = document.getElementById('select-section').value || 'All Sections';
+      var teacherName = document.getElementById('select-teacher').value || 'Class Teacher';
+      var dateIso = document.getElementById('diary-date').value || getTodayISO();
+      var dateInfo = parseDateInfo(dateIso);
+      var noteInput = document.getElementById('input-footer-note');
+      var noteText = (noteInput && noteInput.value.trim())
+        ? noteInput.value.trim()
+        : "Please check & sign your child's homework diary daily.";
+
+      var theme = getHeaderThemeForClass(className);
+
+      var sheetHeader = document.getElementById('live-sheet-header');
+      if (sheetHeader) {
+        sheetHeader.style.background = 'linear-gradient(135deg, ' + theme.gradStart + ' 0%, ' + theme.gradEnd + ' 100%)';
+      }
+
+      var pill = document.getElementById('live-sheet-pill');
+      if (pill) {
+        pill.style.background = theme.pillBg;
+        pill.style.color = theme.pillText;
+      }
+
+      var subEl = document.getElementById('live-sheet-sub');
+      if (subEl) {
+        subEl.style.color = theme.subText;
+        subEl.textContent = className.toUpperCase() + ' • DAILY HOMEWORK SCHEDULE';
+      }
+
+      var dateBox = document.getElementById('live-sheet-datebox');
+      if (dateBox) {
+        dateBox.style.borderColor = theme.accent;
+      }
+
+      var dayEl = document.getElementById('live-sheet-day');
+      if (dayEl) {
+        dayEl.style.color = theme.accent;
+        dayEl.textContent = dateInfo.dayName.toUpperCase();
+      }
+
+      var dateEl = document.getElementById('live-sheet-date');
+      if (dateEl) {
+        dateEl.textContent = dateInfo.shortDate;
+      }
+
+      var lbl1 = document.getElementById('live-meta-lbl1');
+      var lbl2 = document.getElementById('live-meta-lbl2');
+      if (lbl1) lbl1.style.color = theme.accent;
+      if (lbl2) lbl2.style.color = theme.accent;
+
+      document.getElementById('live-meta-classsec').textContent = className + ' — ' + sectionName;
+      document.getElementById('live-meta-teacher').textContent = teacherName;
+
+      var tableHead = document.getElementById('live-table-head');
+      if (tableHead) {
+        tableHead.style.background = theme.tableBar;
+      }
+
+      var footerBrand = document.getElementById('live-footer-brand');
+      if (footerBrand) {
+        footerBrand.style.color = theme.tableBar;
+      }
+
+      document.getElementById('live-sheet-note').textContent = '★  ' + noteText;
+
+      var rowsContainer = document.getElementById('live-diary-rows');
+      if (diaryRows.length === 0) {
+        rowsContainer.innerHTML =
+          '<div style="text-align:center; padding:22px 12px; color:#64748b; font-size:12.5px; background:#f8fafc; border-radius:11px; border:1px dashed #cbd5e1;">' +
+          'Add subjects on the left to populate today\'s multicolor homework table.' +
+          '</div>';
+        return;
+      }
+
+      var rowsHtml = '';
+      var i;
+      for (i = 0; i < diaryRows.length; i++) {
+        var r = diaryRows[i];
+        var sub = findSubjectById(r.subjectId);
+        var pal = COLOR_PALETTES[sub.color] || COLOR_PALETTES.blue;
+        rowsHtml +=
+          '<div class="diary-row-card" style="background:' + pal.bg + '; border-color:' + pal.border + ';">' +
+            '<div class="diary-col-sub" style="border-left-color:' + pal.stripe + ';">' +
+              '<span class="diary-sub-pill" style="background:' + pal.badge + ';">' + escapeHtml(sub.name) + '</span>' +
+            '</div>' +
+            '<div class="diary-col-hw">' + escapeHtml(r.homework) + '</div>' +
+            '<div class="diary-col-det">' + escapeHtml(r.detail || '—') + '</div>' +
+          '</div>';
+      }
+      rowsContainer.innerHTML = rowsHtml;
+    }
+
+    // -----------------------------------------------------------------------
+    // 9. ON-DEMAND MEMORY-SAFE 720PX CANVAS JPG GENERATOR
+    // -----------------------------------------------------------------------
+    function sanitizeFilenamePart(str) {
+      var out = '';
+      var s = String(str || '');
+      var i;
+      for (i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        var code = s.charCodeAt(i);
+        var isAlphaNum = (code >= 48 && code <= 57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
+        if (isAlphaNum) {
+          out += ch;
+        } else if (out.length > 0 && out.charAt(out.length - 1) !== '_') {
+          out += '_';
+        }
+      }
+      if (out.length > 0 && out.charAt(out.length - 1) === '_') {
+        out = out.substring(0, out.length - 1);
+      }
+      return out || 'Diary';
+    }
+
+    function buildDiaryFilename() {
+      var className = document.getElementById('select-class').value || 'Class_1';
+      var sectionName = document.getElementById('select-section').value || 'All_Sections';
+      var dateIso = document.getElementById('diary-date').value || getTodayISO();
+      var safeSlug = sanitizeFilenamePart(className + '_' + sectionName);
+      return 'The_Learning_Zone_' + safeSlug + '_' + dateIso + '.jpg';
+    }
+
+    function wrapCanvasText(ctx, text, maxWidth) {
+      if (!text) return ['—'];
+      var normalized = String(text).split('\r\n').join('\n').split('\r').join('\n');
+      var paragraphs = normalized.split('\n');
+      var lines = [];
+      var pIdx;
+
+      for (pIdx = 0; pIdx < paragraphs.length; pIdx++) {
+        var words = paragraphs[pIdx].split(' ');
+        var currentLine = '';
+        var wIdx;
+
+        for (wIdx = 0; wIdx < words.length; wIdx++) {
+          var word = words[wIdx];
+          if (!word) continue;
+          var testLine = currentLine ? currentLine + ' ' + word : word;
+          if (ctx.measureText(testLine).width <= maxWidth) {
+            currentLine = testLine;
+          } else {
+            if (currentLine) lines.push(currentLine);
+            if (ctx.measureText(word).width > maxWidth) {
+              var chunk = '';
+              var cIdx;
+              for (cIdx = 0; cIdx < word.length; cIdx++) {
+                var ch = word.charAt(cIdx);
+                if (ctx.measureText(chunk + ch).width > maxWidth && chunk) {
+                  lines.push(chunk);
+                  chunk = ch;
+                } else {
+                  chunk += ch;
+                }
+              }
+              currentLine = chunk;
+            } else {
+              currentLine = word;
+            }
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+      }
+
+      return lines.length ? lines : ['—'];
+    }
+
+    function drawRoundRect(ctx, x, y, w, h, r) {
+      var radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function drawCircularArcText(ctx, text, cx, cy, radius, totalAngleRad, isTopArc) {
+      var chars = String(text || '').split('');
+      if (!chars.length) return;
+      var step = chars.length > 1 ? totalAngleRad / (chars.length - 1) : 0;
+      var i;
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (i = 0; i < chars.length; i++) {
+        var angle = isTopArc
+          ? (-Math.PI / 2 - totalAngleRad / 2 + i * step)
+          : (Math.PI / 2 + totalAngleRad / 2 - i * step);
+        ctx.save();
+        ctx.translate(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+        ctx.rotate(isTopArc ? (angle + Math.PI / 2) : (angle - Math.PI / 2));
+        ctx.fillText(chars[i], 0, 0);
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+
+    function drawLearningZoneLogoOnCanvas(ctx, cx, cy, radius) {
+      ctx.save();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius + 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      if (customLogoImageObj) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(customLogoImageObj, cx - radius, cy - radius, radius * 2, radius * 2);
+        ctx.restore();
+        return;
+      }
+
+      var s = radius / 150;
+      ctx.translate(cx, cy);
+      ctx.scale(s, s);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 148, 0, Math.PI * 2);
+      ctx.fillStyle = '#E1252B';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 114, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(0, 0, 114, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.fillStyle = '#F5A623';
+      ctx.fillRect(-116, -24, 232, 48);
+      ctx.fillStyle = '#122C6F';
+      ctx.fillRect(-116, -18, 232, 36);
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 84, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+      ctx.lineWidth = 6.5;
+      ctx.strokeStyle = '#F5A623';
+      ctx.stroke();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '900 24px Georgia, serif';
+      drawCircularArcText(ctx, 'THE LEARNING ZONE', 0, 0, 130, 2.28, true);
+
+      ctx.fillStyle = '#111827';
+      ctx.font = '800 13.5px Arial, sans-serif';
+      drawCircularArcText(ctx, 'FAITH DISCIPLINE UNITY', 0, 0, 99, 2.02, true);
+
+      ctx.font = '800 12.2px Arial, sans-serif';
+      drawCircularArcText(ctx, 'RESPECT PASSION CREATIVITY', 0, 0, 100, 2.15, false);
+
+      ctx.beginPath();
+      ctx.moveTo(0, -64);
+      ctx.lineTo(48, -45);
+      ctx.lineTo(0, -29);
+      ctx.lineTo(-48, -45);
+      ctx.closePath();
+      ctx.fillStyle = '#122C6F';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(-36, -41);
+      ctx.lineTo(-36, -16);
+      ctx.lineWidth = 3.2;
+      ctx.strokeStyle = '#122C6F';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(-36, -17);
+      ctx.lineTo(-41, -5);
+      ctx.lineTo(-31, -5);
+      ctx.closePath();
+      ctx.fillStyle = '#122C6F';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(-27, -33);
+      ctx.lineTo(27, -33);
+      ctx.lineTo(27, -5);
+      ctx.bezierCurveTo(27, 14, 0, 26, 0, 26);
+      ctx.bezierCurveTo(0, 26, -27, 14, -27, -5);
+      ctx.closePath();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#122C6F';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, -26);
+      ctx.lineTo(13, -3);
+      ctx.lineTo(8, 15);
+      ctx.lineTo(-8, 15);
+      ctx.lineTo(-13, -3);
+      ctx.closePath();
+      ctx.fillStyle = '#A67135';
+      ctx.fill();
+
+      ctx.fillStyle = '#39A949';
+      ctx.beginPath();
+      ctx.moveTo(-2, 31);
+      ctx.bezierCurveTo(-18, 24, -38, 24, -54, 30);
+      ctx.bezierCurveTo(-36, 33, -18, 35, -2, 39);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(2, 31);
+      ctx.bezierCurveTo(18, 24, 38, 24, 54, 30);
+      ctx.bezierCurveTo(36, 33, 18, 35, 2, 39);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function createDiaryJpgDataUrl() {
+      // Lightweight 720px width prevents Android WebView GPU OOM crashes
+      var W = 720;
+      var pad = 22;
+      var innerW = W - pad * 2;
+      var col1W = 148;
+      var col2W = 304;
+      var col3W = innerW - col1W - col2W;
+      var fontStack = 'Arial, Helvetica, sans-serif';
+
+      var mCanvas = document.createElement('canvas');
+      mCanvas.width = 4;
+      mCanvas.height = 4;
+      var mCtx = mCanvas.getContext('2d');
+
+      var rowsToDraw = diaryRows.slice();
+      var computedRows = [];
+      var rowsTotalH = 0;
+      var i;
+
+      for (i = 0; i < rowsToDraw.length; i++) {
+        var r = rowsToDraw[i];
+        var sub = findSubjectById(r.subjectId);
+        var pal = COLOR_PALETTES[sub.color] || COLOR_PALETTES.blue;
+
+        mCtx.font = 'bold 14px ' + fontStack;
+        var subLines = wrapCanvasText(mCtx, sub.name, col1W - 26);
+
+        mCtx.font = 'bold 16px ' + fontStack;
+        var hwLines = wrapCanvasText(mCtx, r.homework, col2W - 22);
+
+        mCtx.font = 'normal 14px ' + fontStack;
+        var detLines = wrapCanvasText(mCtx, r.detail || '—', col3W - 22);
+
+        var subH = subLines.length * 19 + 20;
+        var hwH = hwLines.length * 21 + 22;
+        var detH = detLines.length * 19 + 22;
+        var rowH = Math.max(58, subH, hwH, detH);
+
+        computedRows.push({
+          pal: pal,
+          subLines: subLines,
+          hwLines: hwLines,
+          detLines: detLines,
+          rowH: rowH
+        });
+        rowsTotalH += rowH + 10;
+      }
+
+      var noteInput = document.getElementById('input-footer-note');
+      var noteText = (noteInput && noteInput.value.trim())
+        ? noteInput.value.trim()
+        : "Please check & sign your child's homework diary daily.";
+      mCtx.font = 'bold 14px ' + fontStack;
+      var noteLines = wrapCanvasText(mCtx, '★  ' + noteText, innerW - 30);
+      var noteBoxH = noteLines.length * 19 + 20;
+
+      // Release measurement canvas immediately
+      mCanvas.width = 0;
+      mCanvas.height = 0;
+
+      var rainbowH = 10;
+      var headerH = 178;
+      var tableHeadH = 38;
+      var footerH = noteBoxH + 78;
+      var totalH = Math.min(2400, rainbowH + headerH + tableHeadH + rowsTotalH + footerH + rainbowH);
+
+      var canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = totalH;
+      var ctx = canvas.getContext('2d');
+
+      // White Background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, totalH);
+
+      // 1. Top Rainbow Strip
+      var stripeColors = ['#f43f5e', '#f59e0b', '#10b981', '#2563eb', '#8b5cf6'];
+      var sIdx;
+      for (sIdx = 0; sIdx < stripeColors.length; sIdx++) {
+        ctx.fillStyle = stripeColors[sIdx];
+        ctx.fillRect((W / 5) * sIdx, 0, Math.ceil(W / 5), rainbowH);
+      }
+
+      // 2. Class-Specific Header Banner
+      var className = document.getElementById('select-class').value || 'Class 1';
+      var sectionName = document.getElementById('select-section').value || 'All Sections';
+      var teacherName = document.getElementById('select-teacher').value || 'Class Teacher';
+      var headerTheme = getHeaderThemeForClass(className);
+
+      var curY = rainbowH;
+      var grad = ctx.createLinearGradient(0, curY, W, curY + headerH);
+      grad.addColorStop(0, headerTheme.gradStart);
+      grad.addColorStop(1, headerTheme.gradEnd);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, curY, W, headerH);
+
+      // Official Circular Crest Logo
+      drawLearningZoneLogoOnCanvas(ctx, pad + 36, curY + 48, 34);
+
+      // Pill & School Title
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      drawRoundRect(ctx, pad + 82, curY + 16, 184, 21, 10);
+      ctx.fillStyle = headerTheme.pillBg;
+      ctx.fill();
+
+      ctx.fillStyle = headerTheme.pillText;
+      ctx.font = 'bold 11px ' + fontStack;
+      ctx.fillText('DAILY HOMEWORK DIARY', pad + 93, curY + 30);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 26px ' + fontStack;
+      ctx.fillText('THE LEARNING ZONE', pad + 82, curY + 60);
+
+      ctx.fillStyle = headerTheme.subText;
+      ctx.font = 'bold 13px ' + fontStack;
+      ctx.fillText(className.toUpperCase() + ' • DAILY HOMEWORK SCHEDULE', pad + 82, curY + 79);
+
+      // Date & Day Box (Top Right)
+      var dateIso = document.getElementById('diary-date').value || getTodayISO();
+      var dateInfo = parseDateInfo(dateIso);
+      var dateBoxW = 166;
+      var dateBoxX = W - pad - dateBoxW;
+      drawRoundRect(ctx, dateBoxX, curY + 18, dateBoxW, 60, 12);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.30)';
+      ctx.fill();
+      ctx.strokeStyle = headerTheme.accent;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = headerTheme.accent;
+      ctx.font = 'bold 14px ' + fontStack;
+      ctx.fillText(dateInfo.dayName.toUpperCase(), dateBoxX + dateBoxW - 12, curY + 42);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 15px ' + fontStack;
+      ctx.fillText(dateInfo.shortDate, dateBoxX + dateBoxW - 12, curY + 64);
+
+      // Class & Section + Teacher Meta Boxes
+      var metaY = curY + 98;
+      var metaW = (innerW - 12) / 2;
+
+      drawRoundRect(ctx, pad, metaY, metaW, 60, 11);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.34)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.32)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = headerTheme.accent;
+      ctx.font = 'bold 11px ' + fontStack;
+      ctx.fillText('CLASS & SECTION', pad + 12, metaY + 22);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 17px ' + fontStack;
+      ctx.fillText(className + ' — ' + sectionName, pad + 12, metaY + 46);
+
+      var rightMetaX = pad + metaW + 12;
+      drawRoundRect(ctx, rightMetaX, metaY, metaW, 60, 11);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.34)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.32)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = headerTheme.accent;
+      ctx.font = 'bold 11px ' + fontStack;
+      ctx.fillText('CLASS TEACHER', rightMetaX + 12, metaY + 22);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 17px ' + fontStack;
+      ctx.fillText(teacherName, rightMetaX + 12, metaY + 46);
+
+      // 3. 3-Column Table Header Bar
+      curY += headerH;
+      ctx.fillStyle = headerTheme.tableBar;
+      ctx.fillRect(0, curY, W, tableHeadH);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px ' + fontStack;
+      ctx.textAlign = 'left';
+      ctx.fillText('SUBJECT', pad + 12, curY + 24);
+      ctx.fillText('HOMEWORK', pad + col1W + 12, curY + 24);
+      ctx.fillText('DETAIL', pad + col1W + col2W + 12, curY + 24);
+
+      // 4. Multicolor Homework Rows
+      curY += tableHeadH + 10;
+      var rIdx;
+      for (rIdx = 0; rIdx < computedRows.length; rIdx++) {
+        var item = computedRows[rIdx];
+        var pal = item.pal;
+        var subLines = item.subLines;
+        var hwLines = item.hwLines;
+        var detLines = item.detLines;
+        var rowH = item.rowH;
+
+        drawRoundRect(ctx, pad, curY, innerW, rowH, 12);
+        ctx.fillStyle = pal.bg;
+        ctx.fill();
+        ctx.strokeStyle = pal.border;
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+
+        ctx.save();
+        drawRoundRect(ctx, pad, curY, innerW, rowH, 12);
+        ctx.clip();
+        ctx.fillStyle = pal.stripe;
+        ctx.fillRect(pad, curY, 8, rowH);
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.78)';
+        ctx.fillRect(pad + col1W, curY, col2W, rowH);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.50)';
+        ctx.fillRect(pad + col1W + col2W, curY, col3W, rowH);
+        ctx.restore();
+
+        // Column Dividers
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.12)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(pad + col1W, curY + 6);
+        ctx.lineTo(pad + col1W, curY + rowH - 6);
+        ctx.moveTo(pad + col1W + col2W, curY + 6);
+        ctx.lineTo(pad + col1W + col2W, curY + rowH - 6);
+        ctx.stroke();
+
+        // Column 1: Subject Badge
+        var badgeH = subLines.length * 19 + 12;
+        var badgeY = curY + (rowH - badgeH) / 2;
+        drawRoundRect(ctx, pad + 14, badgeY, col1W - 22, badgeH, 8);
+        ctx.fillStyle = pal.badge;
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px ' + fontStack;
+        ctx.textAlign = 'left';
+        var lIdx;
+        for (lIdx = 0; lIdx < subLines.length; lIdx++) {
+          ctx.fillText(subLines[lIdx], pad + 22, badgeY + 19 + lIdx * 19);
+        }
+
+        // Column 2: Homework Text
+        var hwTotalH = hwLines.length * 21;
+        var hwStartY = curY + (rowH - hwTotalH) / 2 + 16;
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 16px ' + fontStack;
+        for (lIdx = 0; lIdx < hwLines.length; lIdx++) {
+          ctx.fillText(hwLines[lIdx], pad + col1W + 12, hwStartY + lIdx * 21);
+        }
+
+        // Column 3: Detail Text
+        var detTotalH = detLines.length * 19;
+        var detStartY = curY + (rowH - detTotalH) / 2 + 14;
+        ctx.fillStyle = '#334155';
+        ctx.font = 'normal 14px ' + fontStack;
+        for (lIdx = 0; lIdx < detLines.length; lIdx++) {
+          ctx.fillText(detLines[lIdx], pad + col1W + col2W + 12, detStartY + lIdx * 19);
+        }
+
+        curY += rowH + 10;
+      }
+
+      // 5. Footer Section
+      curY += 4;
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, curY, W, footerH);
+
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, curY);
+      ctx.lineTo(W, curY);
+      ctx.stroke();
+
+      var noteY = curY + 12;
+      drawRoundRect(ctx, pad, noteY, innerW, noteBoxH, 10);
+      ctx.fillStyle = '#fffbeb';
+      ctx.fill();
+      ctx.strokeStyle = '#fcd34d';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#78350f';
+      ctx.font = 'bold 14px ' + fontStack;
+      var nIdx;
+      for (nIdx = 0; nIdx < noteLines.length; nIdx++) {
+        ctx.fillText(noteLines[nIdx], pad + 14, noteY + 22 + nIdx * 19);
+      }
+
+      var signY = noteY + noteBoxH + 40;
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(pad, signY);
+      ctx.lineTo(pad + 150, signY);
+      ctx.moveTo(W - pad - 150, signY);
+      ctx.lineTo(W - pad, signY);
+      ctx.stroke();
+
+      ctx.fillStyle = '#334155';
+      ctx.font = 'bold 13px ' + fontStack;
+      ctx.textAlign = 'left';
+      ctx.fillText("Teacher's Signature", pad, signY + 18);
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = headerTheme.tableBar;
+      ctx.fillText('THE LEARNING ZONE', W / 2, signY + 10);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#334155';
+      ctx.fillText("Principal's Signature", W - pad, signY + 18);
+
+      // 6. Bottom Rainbow Strip
+      var botY = totalH - rainbowH;
+      for (sIdx = 0; sIdx < stripeColors.length; sIdx++) {
+        ctx.fillStyle = stripeColors[stripeColors.length - 1 - sIdx];
+        ctx.fillRect((W / 5) * sIdx, botY, Math.ceil(W / 5), rainbowH);
+      }
+
+      var resultDataUrl = canvas.toDataURL('image/jpeg', 0.90);
+
+      // Immediately free GPU/renderer canvas memory
+      canvas.width = 0;
+      canvas.height = 0;
+
+      return resultDataUrl;
+    }
+
+    function generateAndOpenJpgModal() {
+      if (diaryRows.length === 0) {
+        showToast('Please add at least one Subject & Homework row first!', true);
+        return;
+      }
+
+      try {
+        var dataUrl = createDiaryJpgDataUrl();
+        var blob = dataUrlToBlob(dataUrl);
+
+        var className = document.getElementById('select-class').value || 'Class 1';
+        var sectionName = document.getElementById('select-section').value || 'All Sections';
+        var dateIso = document.getElementById('diary-date').value || getTodayISO();
+        var filename = buildDiaryFilename();
+
+        activeExport = { dataUrl: dataUrl, blob: blob, filename: filename };
+
+        document.getElementById('modal-preview-img').src = dataUrl;
+        document.getElementById('modal-file-name').textContent = filename;
+        document.getElementById('jpg-modal').classList.add('open');
+
+        // Save lightweight metadata in archive (no huge base64 duplication in localStorage)
+        var info = parseDateInfo(dateIso);
+        archiveList.unshift({
+          id: 'arch_' + Date.now(),
+          dateIso: dateIso,
+          dayName: info.dayName,
+          shortDate: info.shortDate,
+          className: className,
+          sectionName: sectionName,
+          teacherName: document.getElementById('select-teacher').value || 'Teacher',
+          note: document.getElementById('input-footer-note').value.trim(),
+          rows: cloneObj(diaryRows),
+          filename: filename
+        });
+        if (archiveList.length > 20) {
+          archiveList = archiveList.slice(0, 20);
+        }
+        saveArchiveStorage();
+        renderArchive();
+
+        showToast('Diary JPG created! Tap Share/Save or Hold Finger on image.');
+      } catch (err) {
+        showToast('Could not generate JPG image.', true);
+      }
+    }
+
+    function dataUrlToBlob(dataUrl) {
+      var parts = dataUrl.split(',');
+      var bin = atob(parts[1]);
+      var arr = new Uint8Array(bin.length);
+      var i;
+      for (i = 0; i < bin.length; i++) {
+        arr[i] = bin.charCodeAt(i);
+      }
+      return new Blob([arr], { type: 'image/jpeg' });
+    }
+
+    function shareOrSaveToGallery() {
+      var dataUrl = activeExport.dataUrl;
+      var filename = activeExport.filename || buildDiaryFilename();
+      if (!dataUrl) return;
+
+      try {
+        var blob = activeExport.blob || dataUrlToBlob(dataUrl);
+        var file = new File([blob], filename, { type: 'image/jpeg' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({
+            files: [file],
+            title: 'The Learning Zone — Daily Diary',
+            text: filename.split('_').join(' ').replace('.jpg', '')
+          }).then(function () {
+            showToast('Shared / Saved via mobile menu!');
+          }).catch(function (err) {
+            if (!err || err.name !== 'AbortError') {
+              openFullScreenImage(dataUrl);
+              showToast('Press & hold finger on the image -> Save Image.');
+            }
+          });
+          return;
+        }
+      } catch (err) {}
+
+      openFullScreenImage(dataUrl);
+      showToast('Press & hold finger on the full-screen image -> Save Image.');
+    }
+
+    function downloadActiveJpg(customDataUrl, customFilename) {
+      var dataUrl = customDataUrl || activeExport.dataUrl;
+      var filename = customFilename || activeExport.filename || buildDiaryFilename();
+      if (!dataUrl) return;
+
+      try {
+        var blob = (!customDataUrl && activeExport.blob) ? activeExport.blob : dataUrlToBlob(dataUrl);
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          if (a.parentNode) document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 2000);
+        showToast('Download triggered! On mobile, you can also hold finger on image to Save.');
+      } catch (e) {
+        try {
+          var a2 = document.createElement('a');
+          a2.href = dataUrl;
+          a2.download = filename;
+          document.body.appendChild(a2);
+          a2.click();
+          document.body.removeChild(a2);
+        } catch (e2) {
+          openFullScreenImage(dataUrl);
+        }
+      }
+    }
+
+    function openFullScreenImage(customDataUrl) {
+      var dataUrl = customDataUrl || activeExport.dataUrl;
+      if (!dataUrl) return;
+      document.getElementById('fullscreen-raw-img').src = dataUrl;
+      document.getElementById('fullscreen-overlay').classList.add('open');
+    }
+
+    function closeFullScreenImage() {
+      document.getElementById('fullscreen-overlay').classList.remove('open');
+    }
+
+    function closeJpgModal() {
+      document.getElementById('jpg-modal').classList.remove('open');
+    }
+
+    // -----------------------------------------------------------------------
+    // 10. ADMIN SETUP MANAGEMENT
+    // -----------------------------------------------------------------------
+    function handleAddClass(e) {
+      e.preventDefault();
+      var name = document.getElementById('admin-new-class').value.trim();
+      var rawParts = document.getElementById('admin-new-sections').value.split(',');
+      var rawSecs = [];
+      var i;
+      for (i = 0; i < rawParts.length; i++) {
+        var trimmed = rawParts[i].trim();
+        if (trimmed) rawSecs.push(trimmed);
+      }
+      var themeKey = document.getElementById('admin-class-theme').value ||
+        CLASS_HEADER_THEME_KEYS[adminState.classes.length % CLASS_HEADER_THEME_KEYS.length];
+
+      if (!name || rawSecs.length === 0) return;
+
+      var sections = ['All Sections'];
+      for (i = 0; i < rawSecs.length; i++) {
+        if (rawSecs[i].toLowerCase() !== 'all sections' && sections.indexOf(rawSecs[i]) === -1) {
+          sections.push(rawSecs[i]);
+        }
+      }
+
+      var existing = null;
+      for (i = 0; i < adminState.classes.length; i++) {
+        if (adminState.classes[i].name.toLowerCase() === name.toLowerCase()) {
+          existing = adminState.classes[i];
+          break;
+        }
+      }
+
+      if (existing) {
+        existing.theme = themeKey;
+        for (i = 0; i < sections.length; i++) {
+          if (existing.sections.indexOf(sections[i]) === -1) {
+            existing.sections.push(sections[i]);
+          }
+        }
+      } else {
+        adminState.classes.push({ name: name, theme: themeKey, sections: sections });
+      }
+
+      document.getElementById('admin-new-class').value = '';
+      document.getElementById('admin-new-sections').value = '';
+      saveAdminStorage();
+      populateDropdowns();
+      renderAdminLists();
+      renderLivePreview();
+      showToast('Saved ' + name + ' with Header Color Scheme!');
+    }
+
+    function removeClass(idx) {
+      if (adminState.classes.length <= 1) {
+        showToast('At least one class must remain.', true);
+        return;
+      }
+      adminState.classes.splice(idx, 1);
+      saveAdminStorage();
+      populateDropdowns();
+      renderAdminLists();
+      renderLivePreview();
+    }
+
+    function handleAddSubject(e) {
+      e.preventDefault();
+      var name = document.getElementById('admin-new-subject').value.trim();
+      var color = document.getElementById('admin-subject-color').value;
+      if (!name) return;
+
+      adminState.subjects.push({
+        id: 'sub_' + Date.now(),
+        name: name,
+        color: color
+      });
+      document.getElementById('admin-new-subject').value = '';
+      saveAdminStorage();
+      populateDropdowns();
+      renderAdminLists();
+      showToast('Added subject: ' + name);
+    }
+
+    function removeSubject(id) {
+      if (adminState.subjects.length <= 1) {
+        showToast('At least one subject must remain.', true);
+        return;
+      }
+      var nextSubs = [];
+      var i;
+      for (i = 0; i < adminState.subjects.length; i++) {
+        if (adminState.subjects[i].id !== id) {
+          nextSubs.push(adminState.subjects[i]);
+        }
+      }
+      adminState.subjects = nextSubs;
+      saveAdminStorage();
+      populateDropdowns();
+      renderAdminLists();
+      renderAddedRows();
+      renderLivePreview();
+    }
+
+    function handleAddTeacher(e) {
+      e.preventDefault();
+      var name = document.getElementById('admin-new-teacher').value.trim();
+      if (!name) return;
+      if (adminState.teachers.indexOf(name) === -1) {
+        adminState.teachers.push(name);
+      }
+      document.getElementById('admin-new-teacher').value = '';
+      saveAdminStorage();
+      populateDropdowns();
+      renderAdminLists();
+      showToast('Added teacher: ' + name);
+    }
+
+    function removeTeacher(idx) {
+      if (adminState.teachers.length <= 1) {
+        showToast('At least one teacher must remain.', true);
+        return;
+      }
+      adminState.teachers.splice(idx, 1);
+      saveAdminStorage();
+      populateDropdowns();
+      renderAdminLists();
+      renderLivePreview();
+    }
+
+    function resetAdminDefaults() {
+      adminState = {
+        classes: cloneObj(DEFAULT_CLASSES),
+        subjects: cloneObj(DEFAULT_SUBJECTS),
+        teachers: DEFAULT_TEACHERS.slice()
+      };
+      saveAdminStorage();
+      populateDropdowns();
+      renderAdminLists();
+      renderLivePreview();
+      showToast('Default classes, header themes, sections, subjects & teachers restored!');
+    }
+
+    function renderAdminLists() {
+      var i, j;
+      var clsHtml = '';
+      for (i = 0; i < adminState.classes.length; i++) {
+        var c = adminState.classes[i];
+        var theme = getHeaderThemeForClass(c.name);
+        var chips = '';
+        for (j = 0; j < c.sections.length; j++) {
+          var s = c.sections[j];
+          chips += '<span class="chip ' + (s === 'All Sections' ? 'all-sec' : '') + '">' + escapeHtml(s) + '</span>';
+        }
+        clsHtml +=
+          '<div class="admin-list-item">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
+              '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
+                '<span style="width:14px; height:14px; border-radius:4px; background:linear-gradient(135deg,' + theme.gradStart + ',' + theme.gradEnd + '); display:inline-block; flex-shrink:0;"></span>' +
+                '<strong style="font-size:13.5px;">' + escapeHtml(c.name) + '</strong>' +
+              '</div>' +
+              '<button type="button" class="btn-danger-soft" onclick="removeClass(' + i + ')">Delete</button>' +
+            '</div>' +
+            '<div class="chip-list">' + chips + '</div>' +
+          '</div>';
+      }
+      document.getElementById('admin-classes-list').innerHTML = clsHtml;
+
+      var subHtml = '';
+      for (i = 0; i < adminState.subjects.length; i++) {
+        var sub = adminState.subjects[i];
+        var pal = COLOR_PALETTES[sub.color] || COLOR_PALETTES.blue;
+        subHtml +=
+          '<div class="admin-list-item" style="display:flex; align-items:center; justify-content:space-between; background:' + pal.bg + '; border-color:' + pal.border + ';">' +
+            '<span style="background:' + pal.badge + '; color:#fff; padding:3px 10px; border-radius:7px; font-size:12px; font-weight:800;">' + escapeHtml(sub.name) + '</span>' +
+            '<button type="button" class="btn-danger-soft" onclick="removeSubject(\'' + sub.id + '\')">Remove</button>' +
+          '</div>';
+      }
+      document.getElementById('admin-subjects-list').innerHTML = subHtml;
+
+      var tchHtml = '';
+      for (i = 0; i < adminState.teachers.length; i++) {
+        tchHtml +=
+          '<div class="admin-list-item" style="display:flex; align-items:center; justify-content:space-between;">' +
+            '<span style="font-size:13px; font-weight:700;">' + escapeHtml(adminState.teachers[i]) + '</span>' +
+            '<button type="button" class="btn-danger-soft" onclick="removeTeacher(' + i + ')">Remove</button>' +
+          '</div>';
+      }
+      document.getElementById('admin-teachers-list').innerHTML = tchHtml;
+    }
+
+    // -----------------------------------------------------------------------
+    // 11. SAVED ARCHIVE RENDERING (LIGHTWEIGHT METADATA)
+    // -----------------------------------------------------------------------
+    function renderArchive() {
+      document.getElementById('archive-count-badge').textContent = archiveList.length;
+      var grid = document.getElementById('archive-grid');
+
+      if (archiveList.length === 0) {
+        grid.innerHTML =
+          '<div class="card" style="grid-column: 1 / -1; text-align:center; padding:36px 16px;">' +
+            '<div style="font-size:15px; font-weight:800;">No Saved Diaries Yet</div>' +
+            '<p style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">Click "Complete Diary & Create JPG" on the Teacher Diary tab to create and archive diaries.</p>' +
+          '</div>';
+        return;
+      }
+
+      var html = '';
+      var i;
+      for (i = 0; i < archiveList.length; i++) {
+        var item = archiveList[i];
+        var theme = getHeaderThemeForClass(item.className);
+        html +=
+          '<div class="archive-card">' +
+            '<div style="height:10px; background:linear-gradient(135deg,' + theme.gradStart + ',' + theme.gradEnd + ');"></div>' +
+            '<div class="archive-body">' +
+              '<div>' +
+                '<div style="font-size:14.5px; font-weight:800;">' + escapeHtml(item.className) + ' — ' + escapeHtml(item.sectionName) + '</div>' +
+                '<div style="font-size:12px; color:#475569; margin-top:3px;">' + escapeHtml(item.dayName) + ', ' + escapeHtml(item.shortDate) + '</div>' +
+                '<div style="font-size:12px; color:#64748b; margin-top:2px;">Teacher: ' + escapeHtml(item.teacherName) + ' • ' + (item.rows ? item.rows.length : 0) + ' Subject(s)</div>' +
+              '</div>' +
+              '<div style="display:flex; gap:8px;">' +
+                '<button type="button" class="btn btn-emerald" style="flex:1; padding:9px 10px; font-size:12px;" onclick="loadArchiveAndGenerateJpg(\'' + item.id + '\')">Open JPG</button>' +
+                '<button type="button" class="btn btn-soft" onclick="loadArchiveToEditor(\'' + item.id + '\')">Edit Copy</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      }
+      grid.innerHTML = html;
+    }
+
+    function findArchiveById(id) {
+      var i;
+      for (i = 0; i < archiveList.length; i++) {
+        if (archiveList[i].id === id) return archiveList[i];
+      }
+      return null;
+    }
+
+    function loadArchiveToEditor(id) {
+      var item = findArchiveById(id);
+      if (!item) return;
+      document.getElementById('select-class').value = item.className;
+      onClassChange(false);
+      document.getElementById('select-section').value = item.sectionName;
+      document.getElementById('select-teacher').value = item.teacherName;
+      document.getElementById('diary-date').value = item.dateIso;
+      document.getElementById('input-footer-note').value = item.note || '';
+      diaryRows = cloneObj(item.rows || []);
+      updateHeaderAndDayDisplay();
+      saveRowsStorage();
+      renderAddedRows();
+      renderLivePreview();
+      switchTab('diary');
+      showToast('Diary loaded back into editor!');
+    }
+
+    function loadArchiveAndGenerateJpg(id) {
+      loadArchiveToEditor(id);
+      var dataUrl = createDiaryJpgDataUrl();
+      var blob = dataUrlToBlob(dataUrl);
+      var filename = buildDiaryFilename();
+      activeExport = { dataUrl: dataUrl, blob: blob, filename: filename };
+      document.getElementById('modal-preview-img').src = dataUrl;
+      document.getElementById('modal-file-name').textContent = filename;
+      document.getElementById('jpg-modal').classList.add('open');
+    }
+
+    function clearArchive() {
+      archiveList = [];
+      saveArchiveStorage();
+      renderArchive();
+      showToast('Archive cleared.');
+    }
+
+    // -----------------------------------------------------------------------
+    // 12. NAVIGATION TABS, UTILITIES & IMMEDIATE STARTUP INITIALIZATION
+    // -----------------------------------------------------------------------
+    function switchTab(tabName) {
+      var panels = document.querySelectorAll('.tab-panel');
+      var tabs = document.querySelectorAll('.nav-tab');
+      var i;
+      for (i = 0; i < panels.length; i++) {
+        panels[i].classList.remove('active');
+      }
+      for (i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+      var panel = document.getElementById('tab-' + tabName);
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabName + '"]');
+      if (panel) panel.classList.add('active');
+      if (btn) btn.classList.add('active');
+    }
+
+    function showToast(msg, isError) {
+      var box = document.getElementById('toast-box');
+      var text = document.getElementById('toast-msg');
+      if (!box || !text) return;
+      text.textContent = msg;
+      if (isError) {
+        box.classList.add('error');
+      } else {
+        box.classList.remove('error');
+      }
+      box.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        box.classList.remove('show');
+      }, 3400);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .split('&').join('&amp;')
+        .split('<').join('&lt;')
+        .split('>').join('&gt;')
+        .split('"').join('&quot;')
+        .split("'").join('&#39;');
+    }
+
+    var appInitialized = false;
+    function initApp() {
+      if (appInitialized) return;
+      appInitialized = true;
+
+      try {
+        loadAllState();
+        updateLogoDisplays();
+
+        var dateInput = document.getElementById('diary-date');
+        if (dateInput) {
+          dateInput.value = getTodayISO();
+        }
+        updateHeaderAndDayDisplay();
+
+        populateDropdowns();
+        renderAdminLists();
+        renderAddedRows();
+        renderArchive();
+        renderLivePreview();
+      } catch (err) {
+        if (window.console && console.error) {
+          console.error('Initialization error:', err);
+        }
+      }
+    }
+
+    window.onload = initApp;
+    initApp();
+  </script>
+</body>
+</html>
