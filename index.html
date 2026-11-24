@@ -216,7 +216,7 @@
 
     @media (min-width: 960px) {
       .workspace-grid {
-        grid-template-columns: 430px 1fr;
+        grid-template-columns: 440px 1fr;
       }
     }
 
@@ -344,6 +344,12 @@
       border-radius: 50%;
       background: #fde047;
       display: inline-block;
+    }
+
+    .teacher-hybrid-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
 
     .btn {
@@ -478,7 +484,6 @@
 
     /* =========================================================================
        6. EXPORT BANNER & LIGHTWEIGHT DOM LIVE MULTICOLOR DIARY PREVIEW
-          (ZERO OFFSCREEN CANVAS ALLOCATION ON LESSON ADD = ZERO WEBVIEW CRASH)
        ========================================================================= */
     .export-banner {
       background: linear-gradient(135deg, #065f46 0%, #059669 100%);
@@ -735,6 +740,32 @@
       margin-top: 8px;
     }
 
+    .diary-quote-box {
+      background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+      border: 1.5px solid #c7d2fe;
+      border-left: 5px solid #4338ca;
+      border-radius: 10px;
+      padding: 9px 11px;
+      margin-bottom: 8px;
+    }
+
+    .diary-quote-head {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #3730a3;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .diary-quote-text {
+      font-size: 12px;
+      font-weight: 700;
+      font-style: italic;
+      color: #1e1b4b;
+      line-height: 1.4;
+    }
+
     .diary-note-box {
       background: #fffbeb;
       border: 1px solid #fcd34d;
@@ -764,8 +795,51 @@
     }
 
     /* =========================================================================
-       7. ADMIN SETUP & ARCHIVE GRIDS
+       7. TEACHERS TAB, ADMIN SETUP & ARCHIVE GRIDS
        ========================================================================= */
+    .teachers-hub-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    @media (min-width: 780px) {
+      .teachers-hub-grid {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+
+    .teacher-directory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 10px;
+    }
+
+    .teacher-card-item {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 11px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .teacher-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3730a3, #2563eb);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
     .admin-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -774,23 +848,24 @@
 
     @media (min-width: 860px) {
       .admin-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr 1fr;
       }
     }
 
     .chip-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 5px;
       margin-top: 6px;
     }
 
     .chip {
       display: inline-flex;
       align-items: center;
-      padding: 3px 9px;
+      gap: 4px;
+      padding: 3px 8px;
       border-radius: 999px;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 700;
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
@@ -803,12 +878,19 @@
       color: #92400e;
     }
 
+    .chip-del {
+      color: #be123c;
+      font-weight: 900;
+      margin-left: 2px;
+      cursor: pointer;
+    }
+
     .admin-list-item {
-      padding: 10px 12px;
+      padding: 11px 12px;
       border: 1px solid var(--border-light);
       border-radius: 11px;
       background: #f8fafc;
-      margin-bottom: 8px;
+      margin-bottom: 9px;
     }
 
     .archive-grid {
@@ -1021,12 +1103,12 @@
           <line x1="8" y1="2" x2="8" y2="6"></line>
           <line x1="3" y1="10" x2="21" y2="10"></line>
         </svg>
-        <span id="header-date-text">Monday, 23 Nov 2026</span>
+        <span id="header-date-text">Tuesday, 24 Nov 2026</span>
       </div>
     </div>
   </header>
 
-  <!-- NAVIGATION TABS -->
+  <!-- NAVIGATION TABS (INCLUDES DEDICATED TEACHERS TAB) -->
   <nav class="nav-bar" aria-label="Main Sections">
     <div class="nav-inner">
       <button type="button" class="nav-tab active" data-tab="diary" onclick="switchTab('diary')">
@@ -1035,6 +1117,17 @@
           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
         </svg>
         Teacher Diary
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="teachers" onclick="switchTab('teachers')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        Teachers
+        <span class="badge-count" id="teachers-count-badge">0</span>
       </button>
 
       <button type="button" class="nav-tab" data-tab="admin" onclick="switchTab('admin')">
@@ -1068,7 +1161,7 @@
     <section id="tab-diary" class="tab-panel active">
       <div class="workspace-grid">
 
-        <!-- LEFT COLUMN: CLASS/TEACHER DETAILS + SUBJECT/HOMEWORK/DETAIL FORM -->
+        <!-- LEFT COLUMN: CLASS/TEACHER DETAILS + CLASS-WISE SUBJECT FORM -->
         <div>
           <!-- 1. Class, Section, Teacher & Date Card -->
           <div class="card">
@@ -1115,21 +1208,32 @@
               </div>
             </div>
 
+            <!-- Flexible Teacher Entry: Select Saved Teacher OR Type Directly + Quick Save -->
+            <div class="form-group">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <label class="form-label" for="input-teacher-name" style="margin-bottom:0;">Class Teacher Name <span class="req-star">*</span></label>
+                <button type="button" style="font-size:11px; font-weight:800; color:#3730a3; text-decoration:underline;" onclick="switchTab('teachers')">+ Manage Teachers Tab</button>
+              </div>
+
+              <select id="select-teacher-saved" class="form-control" style="margin-bottom:6px; display:none;" onchange="onSelectSavedTeacher()"></select>
+
+              <div class="teacher-hybrid-row">
+                <input type="text" id="input-teacher-name" class="form-control" placeholder="Type Teacher Name (e.g., Miss Ayesha Khan)" oninput="renderLivePreview()" />
+                <button type="button" class="btn btn-soft" style="white-space:nowrap; padding:10px 11px;" title="Save this name to Teachers Tab" onclick="quickSaveTeacherFromDiary()">+ Save</button>
+              </div>
+            </div>
+
             <div class="form-grid-2">
               <div class="form-group">
-                <label class="form-label" for="select-teacher">Class Teacher <span class="req-star">*</span></label>
-                <select id="select-teacher" class="form-control" onchange="renderLivePreview()">
-                  <option value="Miss Ayesha Khan" selected>Miss Ayesha Khan</option>
-                  <option value="Sir Bilal Ahmed">Sir Bilal Ahmed</option>
-                  <option value="Miss Fatima Noor">Miss Fatima Noor</option>
-                  <option value="Sir Kamran Ali">Sir Kamran Ali</option>
-                  <option value="Miss Zara Siddiqui">Miss Zara Siddiqui</option>
-                </select>
+                <label class="form-label" for="diary-date">Diary Date (<span id="day-display">Tuesday</span>)</label>
+                <input type="date" id="diary-date" class="form-control" onchange="onDateChange()" />
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="diary-date">Diary Date (<span id="day-display">Monday</span>)</label>
-                <input type="date" id="diary-date" class="form-control" value="2026-11-23" onchange="onDateChange()" />
+                <label class="form-label">Daily Motivational Quote</label>
+                <button type="button" class="btn btn-soft btn-full" style="padding:10px 10px;" onclick="cycleDailyQuote()">
+                  ↻ Change Quote
+                </button>
               </div>
             </div>
 
@@ -1139,7 +1243,7 @@
             </div>
           </div>
 
-          <!-- 2. Add / Edit Homework Row (Subject | Homework | Detail) -->
+          <!-- 2. Add / Edit Homework Row (Filtered Class-Wise Subjects) -->
           <div class="card">
             <div class="card-header">
               <div class="card-title" id="form-mode-title">
@@ -1153,16 +1257,13 @@
               <input type="hidden" id="edit-row-id" value="" />
 
               <div class="form-group">
-                <label class="form-label" for="select-subject">Subject <span class="req-star">*</span></label>
-                <select id="select-subject" class="form-control" required>
-                  <option value="sub_eng" selected>English</option>
-                  <option value="sub_math">Mathematics</option>
-                  <option value="sub_urdu">Urdu</option>
-                  <option value="sub_sci">General Science</option>
-                  <option value="sub_isl">Islamiyat</option>
-                  <option value="sub_comp">Computer Science</option>
-                  <option value="sub_sst">Social Studies</option>
-                </select>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                  <label class="form-label" for="select-subject" style="margin-bottom:0;">
+                    Subject (<span id="subject-class-badge" style="color:#3730a3;">Class 1</span>) <span class="req-star">*</span>
+                  </label>
+                  <span id="subject-count-hint" style="font-size:11px; font-weight:700; color:#64748b;">9 Subjects</span>
+                </div>
+                <select id="select-subject" class="form-control" required></select>
               </div>
 
               <div class="form-group">
@@ -1189,7 +1290,7 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title">
-                <span class="icon-box icon-emerald" id="rows-count-badge">3</span>
+                <span class="icon-box icon-emerald" id="rows-count-badge">0</span>
                 Added Homework Rows
               </div>
               <div style="display:flex; gap:6px;">
@@ -1207,7 +1308,7 @@
           <div class="export-banner">
             <div>
               <h3>Complete Diary & Create JPG</h3>
-              <p>Generates a crisp multicolor JPG ready to save to gallery or share.</p>
+              <p>Generates a crisp multicolor JPG with daily motivational quote ready to share.</p>
             </div>
 
             <button type="button" class="btn btn-amber" onclick="generateAndOpenJpgModal()">
@@ -1237,8 +1338,8 @@
                   </div>
 
                   <div class="diary-date-box" id="live-sheet-datebox">
-                    <div class="diary-day-label" id="live-sheet-day">MONDAY</div>
-                    <div class="diary-date-val" id="live-sheet-date">23 Nov 2026</div>
+                    <div class="diary-day-label" id="live-sheet-day">TUESDAY</div>
+                    <div class="diary-date-val" id="live-sheet-date">24 Nov 2026</div>
                   </div>
                 </div>
 
@@ -1249,7 +1350,7 @@
                   </div>
                   <div class="diary-meta-card">
                     <div class="diary-meta-lbl" id="live-meta-lbl2">CLASS TEACHER</div>
-                    <div class="diary-meta-val" id="live-meta-teacher">Miss Ayesha Khan</div>
+                    <div class="diary-meta-val" id="live-meta-teacher">—</div>
                   </div>
                 </div>
               </div>
@@ -1263,6 +1364,14 @@
               <div class="diary-rows-container" id="live-diary-rows"></div>
 
               <div class="diary-sheet-footer">
+                <!-- Auto Daily Motivational Quote Banner -->
+                <div class="diary-quote-box" id="live-quote-box">
+                  <div class="diary-quote-head">✦ Thought of the Day</div>
+                  <div class="diary-quote-text" id="live-quote-text">
+                    "Education is the most powerful weapon which you can use to change the world."
+                  </div>
+                </div>
+
                 <div class="diary-note-box" id="live-sheet-note">
                   ★ Please check & sign your child's homework diary daily.
                 </div>
@@ -1283,35 +1392,122 @@
     </section>
 
     <!-- ===================================================================
-         TAB 2: ADMIN SETUP (CLASSES/SECTIONS, SUBJECTS & COLORS, TEACHERS)
+         TAB 2: DEDICATED TEACHERS MANAGEMENT TAB (STARTS CLEAN/EMPTY)
+         =================================================================== -->
+    <section id="tab-teachers" class="tab-panel">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px;">
+        <div>
+          <h2 style="font-size:18px; font-weight:800;">Teachers Directory</h2>
+          <p style="font-size:12.5px; color:var(--text-muted);">Add your school teachers here so they appear automatically in the Teacher Diary dropdown, or click "Use in Diary" to select a teacher immediately.</p>
+        </div>
+        <button type="button" class="btn btn-danger-soft" onclick="clearAllTeachers()">Clear All Teachers</button>
+      </div>
+
+      <div class="teachers-hub-grid">
+        <!-- Left: Add Teacher Form -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon-box icon-emerald">+</span>
+              Add New Teacher
+            </div>
+          </div>
+
+          <form onsubmit="handleAddTeacherFromTab(event)">
+            <div class="form-group">
+              <label class="form-label" for="teachers-tab-name">Teacher Full Name <span class="req-star">*</span></label>
+              <input type="text" id="teachers-tab-name" class="form-control" required placeholder="e.g., Miss Ayesha Khan or Sir Bilal Ahmed" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="teachers-tab-role">Designation / Subject Note (Optional)</label>
+              <input type="text" id="teachers-tab-role" class="form-control" placeholder="e.g., Class Teacher / Science Specialist" />
+            </div>
+
+            <button type="submit" class="btn btn-emerald btn-full">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Save Teacher to Directory
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Registered Teachers List -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon-box icon-indigo" id="teachers-list-badge">0</span>
+              Registered Teachers
+            </div>
+          </div>
+
+          <div id="teachers-directory-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 3: ADMIN SETUP (CLASS-WISE SUBJECTS & CLASS SECTIONS/THEMES)
          =================================================================== -->
     <section id="tab-admin" class="tab-panel">
       <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px;">
         <div>
           <h2 style="font-size:18px; font-weight:800;">School Admin Setup</h2>
-          <p style="font-size:12.5px; color:var(--text-muted);">Manage Classes, Header Color Schemes, Sections ("All Sections" is auto-included), Color-Coded Subjects, and Teachers.</p>
+          <p style="font-size:12.5px; color:var(--text-muted);">Manage Class-Wise Subjects, Sections ("All Sections" is auto-included), Header Color Schemes, and School Crest Logo.</p>
         </div>
-        <button type="button" class="btn btn-danger-soft" onclick="resetAdminDefaults()">Reset Default Data</button>
+        <button type="button" class="btn btn-danger-soft" onclick="resetAdminDefaults()">Reset Default Class-Wise Subjects</button>
       </div>
 
       <div class="admin-grid">
-        <!-- 1. Classes, Sections & Header Theme -->
+        <!-- 1. Class-Wise Subject Management -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon-box icon-amber">S</span>
+              Class-Wise Subject Management
+            </div>
+          </div>
+
+          <form onsubmit="handleAddSubjectToClass(event)" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label class="form-label" for="admin-subject-target-class">Target Class <span class="req-star">*</span></label>
+              <select id="admin-subject-target-class" class="form-control"></select>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="admin-new-subject">Subject Name <span class="req-star">*</span></label>
+                <input type="text" id="admin-new-subject" class="form-control" required placeholder="e.g., Drawing or Pak Studies" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="admin-subject-color">Badge Color</label>
+                <select id="admin-subject-color" class="form-control"></select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">+ Add Subject to Selected Class</button>
+          </form>
+
+          <div id="admin-class-subjects-list"></div>
+        </div>
+
+        <!-- 2. Classes, Sections & Header Color Schemes -->
         <div class="card">
           <div class="card-header">
             <div class="card-title">
               <span class="icon-box icon-indigo">C</span>
-              Classes, Sections & Header Theme
+              Classes, Sections & Header Themes
             </div>
           </div>
 
           <form onsubmit="handleAddClass(event)" style="margin-bottom:14px;">
             <div class="form-group">
-              <label class="form-label">Class Name (Select existing to update or type new)</label>
+              <label class="form-label">Class Name (Type existing to update or new)</label>
               <input type="text" id="admin-new-class" class="form-control" required placeholder="e.g., Class 8th or Class 1" />
             </div>
             <div class="form-group">
               <label class="form-label">Sections (comma-separated)</label>
-              <input type="text" id="admin-new-sections" class="form-control" required placeholder="e.g., Limelight, Sapphire" />
+              <input type="text" id="admin-new-sections" class="form-control" required placeholder="e.g., Rose, Marigold, Tulip" />
               <small style="font-size:11px; color:var(--text-muted); display:block; margin-top:3px;">"All Sections" is prepended automatically.</small>
             </div>
             <div class="form-group">
@@ -1323,53 +1519,9 @@
 
           <div id="admin-classes-list"></div>
         </div>
-
-        <!-- 2. Subjects & Color Themes -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <span class="icon-box icon-amber">S</span>
-              Subjects & Colors
-            </div>
-          </div>
-
-          <form onsubmit="handleAddSubject(event)" style="margin-bottom:14px;">
-            <div class="form-group">
-              <label class="form-label">Subject Name</label>
-              <input type="text" id="admin-new-subject" class="form-control" required placeholder="e.g., Physics" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="admin-subject-color">Row Multicolor Theme</label>
-              <select id="admin-subject-color" class="form-control"></select>
-            </div>
-            <button type="submit" class="btn btn-primary btn-full">Add Subject</button>
-          </form>
-
-          <div id="admin-subjects-list"></div>
-        </div>
-
-        <!-- 3. Teachers -->
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <span class="icon-box icon-emerald">T</span>
-              Teachers Directory
-            </div>
-          </div>
-
-          <form onsubmit="handleAddTeacher(event)" style="margin-bottom:14px;">
-            <div class="form-group">
-              <label class="form-label">Teacher Full Name</label>
-              <input type="text" id="admin-new-teacher" class="form-control" required placeholder="e.g., Sir Usman Tariq" />
-            </div>
-            <button type="submit" class="btn btn-primary btn-full">Add Teacher</button>
-          </form>
-
-          <div id="admin-teachers-list"></div>
-        </div>
       </div>
 
-      <!-- 4. School Crest Logo Customization Card -->
+      <!-- 3. School Crest Logo Customization Card -->
       <div class="card" style="margin-top:18px;">
         <div class="card-header">
           <div class="card-title">
@@ -1393,7 +1545,7 @@
     </section>
 
     <!-- ===================================================================
-         TAB 3: SAVED DIARIES ARCHIVE (LIGHTWEIGHT METADATA — ZERO MEMORY BLOAT)
+         TAB 4: SAVED DIARIES ARCHIVE
          =================================================================== -->
     <section id="tab-archive" class="tab-panel">
       <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px;">
@@ -1504,17 +1656,52 @@
     }
 
     // -----------------------------------------------------------------------
-    // 2. CLASS HEADER COLOR SCHEMES (13 DISTINCT SCHEMES) & SUBJECT PALETTES
+    // 2. STORAGE KEYS, 13 CLASS THEMES, SUBJECT PALETTES & DAILY QUOTES
     // -----------------------------------------------------------------------
     var STORAGE_KEYS = {
-      ADMIN: 'tlz_diary_admin_v3',
-      ROWS: 'tlz_diary_rows_v3',
-      ARCHIVE: 'tlz_diary_archive_v3',
-      LOGO: 'tlz_diary_logo_v3'
+      ADMIN: 'tlz_diary_admin_v4',
+      ROWS: 'tlz_diary_rows_v4',
+      ARCHIVE: 'tlz_diary_archive_v4',
+      LOGO: 'tlz_diary_logo_v4',
+      ACTIVE_TEACHER: 'tlz_diary_active_teacher_v4'
     };
 
     var customLogoDataUrl = '';
     var customLogoImageObj = null;
+    var quoteManualOffset = 0;
+
+    var MOTIVATIONAL_QUOTES = [
+      'Education is the most powerful weapon which you can use to change the world.',
+      'The beautiful thing about learning is that no one can take it away from you.',
+      'Small daily improvements over time lead to stunning results.',
+      'Discipline is the bridge between goals and accomplishment.',
+      'Dream big, work hard, stay focused, and surround yourself with good people.',
+      'Success is the sum of small efforts, repeated day in and day out.',
+      'A person who never made a mistake never tried anything new.',
+      'Good manners and kindness open doors that education alone cannot.',
+      'Believe you can and you are halfway there.',
+      'Reading is to the mind what exercise is to the body.',
+      'Honesty is the first chapter in the book of wisdom.',
+      'Every expert was once a beginner — keep practicing every day!',
+      'Hard work beats talent when talent does not work hard.',
+      'Respect your teachers and parents; their guidance is your greatest treasure.',
+      'Mistakes are proof that you are trying. Keep learning!',
+      'Consistency and neatness in your work build a bright future.',
+      'The future belongs to those who prepare for it today.',
+      'Be curious, ask questions, and never stop exploring new ideas.',
+      'True character is doing the right thing even when no one is watching.',
+      'Your attitude determines your direction. Stay positive and humble!',
+      'Knowledge brings light to the mind and strength to the character.',
+      'A little progress each day adds up to big achievements.',
+      'Patience, faith, and perseverance conquer every difficulty.',
+      'Be kind whenever possible — it is always possible.',
+      'Neat handwriting and organized habits reflect a clear and disciplined mind.',
+      'Today is a new opportunity to learn something wonderful.',
+      'Excellence is not an act, but a daily habit.',
+      'Listen carefully, think deeply, and speak with respect.',
+      'Great things never come from comfort zones — challenge yourself to grow!',
+      'With faith, discipline, and unity, every student can soar to excellence.'
+    ];
 
     var CLASS_HEADER_THEMES = {
       pg_coral:     { label: 'Coral Pink (Play Group)',              gradStart: '#e11d48', gradEnd: '#fb7185', tableBar: '#9f1239', accent: '#fde047', pillBg: '#fef08a', pillText: '#881337', subText: '#ffe4e6' },
@@ -1550,65 +1737,59 @@
       pink:    { label: 'Magenta Pink',   bg: '#fdf2f8', border: '#f9a8d4', badge: '#be185d', stripe: '#ec4899' }
     };
 
+    // Exact Master Subject Catalog with distinct multicolor badges
+    var SUBJECT_CATALOG = {
+      sub_eng:      { id: 'sub_eng',      name: 'English',          color: 'blue' },
+      sub_urdu:     { id: 'sub_urdu',     name: 'Urdu',             color: 'amber' },
+      sub_math:     { id: 'sub_math',     name: 'Math',             color: 'emerald' },
+      sub_gk:       { id: 'sub_gk',       name: 'GK',               color: 'purple' },
+      sub_vart:     { id: 'sub_vart',     name: 'VArt',             color: 'pink' },
+      sub_nazra:    { id: 'sub_nazra',    name: 'Nazra',            color: 'teal' },
+      sub_isl:      { id: 'sub_isl',      name: 'Islamiat',         color: 'teal' },
+      sub_tarjma:   { id: 'sub_tarjma',   name: 'Tarjma-Tul-Quran', color: 'emerald' },
+      sub_eng_gram: { id: 'sub_eng_gram', name: 'English Grammar',  color: 'indigo' },
+      sub_urdu_gram:{ id: 'sub_urdu_gram',name: 'Urdu Grammar',     color: 'orange' },
+      sub_sci:      { id: 'sub_sci',      name: 'Science',          color: 'purple' },
+      sub_sst:      { id: 'sub_sst',      name: 'SST',              color: 'rose' },
+      sub_geo:      { id: 'sub_geo',      name: 'GEO',              color: 'orange' },
+      sub_phy:      { id: 'sub_phy',      name: 'Physics',          color: 'indigo' },
+      sub_chem:     { id: 'sub_chem',     name: 'Chemistry',        color: 'purple' },
+      sub_comp:     { id: 'sub_comp',     name: 'Computer',         color: 'blue' },
+      sub_bio:      { id: 'sub_bio',      name: 'Biology',          color: 'emerald' },
+      sub_pst:      { id: 'sub_pst',      name: 'Pakistan Studies', color: 'rose' }
+    };
+
+    // Exact Class-Wise Subject Lists as Requested
+    var SUBS_EARLY = ['sub_eng', 'sub_urdu', 'sub_math', 'sub_gk', 'sub_vart', 'sub_nazra'];
+    var SUBS_C1_C3 = ['sub_eng', 'sub_urdu', 'sub_math', 'sub_isl', 'sub_tarjma', 'sub_eng_gram', 'sub_urdu_gram', 'sub_gk', 'sub_vart'];
+    var SUBS_C4_C5 = ['sub_eng', 'sub_urdu', 'sub_math', 'sub_isl', 'sub_tarjma', 'sub_eng_gram', 'sub_urdu_gram', 'sub_sci', 'sub_sst'];
+    var SUBS_C6_C7 = ['sub_eng', 'sub_urdu', 'sub_math', 'sub_isl', 'sub_tarjma', 'sub_eng_gram', 'sub_urdu_gram', 'sub_sci', 'sub_geo'];
+    var SUBS_HIGH  = ['sub_eng', 'sub_urdu', 'sub_math', 'sub_phy', 'sub_chem', 'sub_comp', 'sub_bio', 'sub_pst', 'sub_isl', 'sub_eng_gram', 'sub_urdu_gram', 'sub_tarjma'];
+
     var DEFAULT_CLASSES = [
-      { name: 'Play Group',    theme: 'pg_coral',     sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'] },
-      { name: 'Nursery',       theme: 'nursery_sun',  sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'] },
-      { name: 'KG',            theme: 'kg_cyan',      sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'] },
-      { name: 'Class 1',       theme: 'c1_emerald',   sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'] },
-      { name: 'Class 2',       theme: 'c2_teal',      sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'] },
-      { name: 'Class 3',       theme: 'c3_cobalt',    sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'] },
-      { name: 'Class 4',       theme: 'c4_indigo',    sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'] },
-      { name: 'Class 5',       theme: 'c5_purple',    sections: ['All Sections', 'Limelight', 'Sapphire'] },
-      { name: 'Class 6',       theme: 'c6_magenta',   sections: ['All Sections', 'Limelight', 'Sapphire'] },
-      { name: 'Class 7th',     theme: 'c7_crimson',   sections: ['All Sections', 'Limelight', 'Sapphire'] },
-      { name: 'Class Pre-9th', theme: 'pre9_steel',   sections: ['All Sections', 'Biology Group', 'Computer Group'] },
-      { name: 'Class 9th',     theme: 'c9_navy',      sections: ['All Sections', 'Biology Group', 'Computer Group'] },
-      { name: 'Class 10th',    theme: 'c10_burgundy', sections: ['All Sections', 'Biology Group', 'Computer Group'] }
-    ];
-
-    var DEFAULT_SUBJECTS = [
-      { id: 'sub_eng',  name: 'English',          color: 'blue' },
-      { id: 'sub_math', name: 'Mathematics',      color: 'emerald' },
-      { id: 'sub_urdu', name: 'Urdu',             color: 'amber' },
-      { id: 'sub_sci',  name: 'General Science',  color: 'purple' },
-      { id: 'sub_isl',  name: 'Islamiyat',        color: 'teal' },
-      { id: 'sub_comp', name: 'Computer Science', color: 'indigo' },
-      { id: 'sub_sst',  name: 'Social Studies',   color: 'rose' }
-    ];
-
-    var DEFAULT_TEACHERS = [
-      'Miss Ayesha Khan',
-      'Sir Bilal Ahmed',
-      'Miss Fatima Noor',
-      'Sir Kamran Ali',
-      'Miss Zara Siddiqui'
-    ];
-
-    var SAMPLE_DIARY_ROWS = [
-      {
-        id: 'row_sample_1',
-        subjectId: 'sub_eng',
-        homework: 'Learn & Write Q/A # 1 to 3 on Homework Notebook.',
-        detail: 'Unit 2: The Wise Farmer, Book Pg 18-19'
-      },
-      {
-        id: 'row_sample_2',
-        subjectId: 'sub_math',
-        homework: 'Solve Exercise 2.4 (Q # 1 to 5) neatly.',
-        detail: 'Chapter 2: Addition & Subtraction, Pg 34'
-      },
-      {
-        id: 'row_sample_3',
-        subjectId: 'sub_sci',
-        homework: 'Draw & label parts of a flowering plant.',
-        detail: 'Lesson 3: Plant Life, Workbook Pg 12'
-      }
+      { name: 'Play Group',    theme: 'pg_coral',     sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'], subjectIds: SUBS_EARLY.slice() },
+      { name: 'Nursery',       theme: 'nursery_sun',  sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'], subjectIds: SUBS_EARLY.slice() },
+      { name: 'KG',            theme: 'kg_cyan',      sections: ['All Sections', 'Butterfly', 'Rainbow', 'Dolphin'], subjectIds: SUBS_EARLY.slice() },
+      { name: 'Class 1',       theme: 'c1_emerald',   sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'],     subjectIds: SUBS_C1_C3.slice() },
+      { name: 'Class 2',       theme: 'c2_teal',      sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'],     subjectIds: SUBS_C1_C3.slice() },
+      { name: 'Class 3',       theme: 'c3_cobalt',    sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'],     subjectIds: SUBS_C1_C3.slice() },
+      { name: 'Class 4',       theme: 'c4_indigo',    sections: ['All Sections', 'Rose', 'Marigold', 'Tulip'],     subjectIds: SUBS_C4_C5.slice() },
+      { name: 'Class 5',       theme: 'c5_purple',    sections: ['All Sections', 'Limelight', 'Sapphire'],         subjectIds: SUBS_C4_C5.slice() },
+      { name: 'Class 6',       theme: 'c6_magenta',   sections: ['All Sections', 'Limelight', 'Sapphire'],         subjectIds: SUBS_C6_C7.slice() },
+      { name: 'Class 7th',     theme: 'c7_crimson',   sections: ['All Sections', 'Limelight', 'Sapphire'],         subjectIds: SUBS_C6_C7.slice() },
+      { name: 'Class Pre-9th', theme: 'pre9_steel',   sections: ['All Sections', 'Biology Group', 'Computer Group'], subjectIds: SUBS_HIGH.slice() },
+      { name: 'Class 9th',     theme: 'c9_navy',      sections: ['All Sections', 'Biology Group', 'Computer Group'], subjectIds: SUBS_HIGH.slice() },
+      { name: 'Class 10th',    theme: 'c10_burgundy', sections: ['All Sections', 'Biology Group', 'Computer Group'], subjectIds: SUBS_HIGH.slice() }
     ];
 
     // -----------------------------------------------------------------------
-    // 3. APPLICATION STATE & STORAGE LOADERS
+    // 3. APPLICATION STATE & STORAGE LOADERS (EMPTY DEFAULT TEACHERS)
     // -----------------------------------------------------------------------
-    var adminState = { classes: [], subjects: [], teachers: [] };
+    var adminState = {
+      classes: [],
+      subjectsMap: {},
+      teachers: [] // Starts completely clean/empty as requested
+    };
     var diaryRows = [];
     var archiveList = [];
     var activeExport = { dataUrl: '', blob: null, filename: 'The_Learning_Zone_Diary.jpg' };
@@ -1618,19 +1799,42 @@
       return JSON.parse(JSON.stringify(obj));
     }
 
-    function getHeaderThemeForClass(className) {
+    function getClassObjByName(className) {
       var i;
       for (i = 0; i < adminState.classes.length; i++) {
         if (adminState.classes[i].name === className) {
-          var key = adminState.classes[i].theme;
-          if (key && CLASS_HEADER_THEMES[key]) {
-            return CLASS_HEADER_THEMES[key];
-          }
-          var fallbackKey = CLASS_HEADER_THEME_KEYS[i % CLASS_HEADER_THEME_KEYS.length];
-          return CLASS_HEADER_THEMES[fallbackKey];
+          return adminState.classes[i];
         }
       }
+      return adminState.classes[0] || DEFAULT_CLASSES[3];
+    }
+
+    function getHeaderThemeForClass(className) {
+      var cls = getClassObjByName(className);
+      if (cls && cls.theme && CLASS_HEADER_THEMES[cls.theme]) {
+        return CLASS_HEADER_THEMES[cls.theme];
+      }
       return CLASS_HEADER_THEMES.c1_emerald;
+    }
+
+    function getDailyQuoteText() {
+      var dateInput = document.getElementById('diary-date');
+      var iso = (dateInput && dateInput.value) ? dateInput.value : getTodayISO();
+      var parts = iso.split('-');
+      var daySeed = 0;
+      if (parts.length === 3) {
+        daySeed = (Number(parts[0]) * 372) + (Number(parts[1]) * 31) + Number(parts[2]);
+      } else {
+        daySeed = Math.floor(Date.now() / 86400000);
+      }
+      var idx = Math.abs(daySeed + quoteManualOffset) % MOTIVATIONAL_QUOTES.length;
+      return MOTIVATIONAL_QUOTES[idx];
+    }
+
+    function cycleDailyQuote() {
+      quoteManualOffset += 1;
+      renderLivePreview();
+      showToast('Updated daily motivational quote!');
     }
 
     function loadAllState() {
@@ -1655,19 +1859,29 @@
           if (!c.theme || !CLASS_HEADER_THEMES[c.theme]) {
             c.theme = CLASS_HEADER_THEME_KEYS[idx % CLASS_HEADER_THEME_KEYS.length];
           }
+          if (!c.subjectIds || !c.subjectIds.length) {
+            c.subjectIds = SUBS_C1_C3.slice();
+          }
         }
         adminState.classes = loadedAdmin.classes;
-        adminState.subjects = (loadedAdmin.subjects && loadedAdmin.subjects.length > 0)
-          ? loadedAdmin.subjects
-          : cloneObj(DEFAULT_SUBJECTS);
-        adminState.teachers = (loadedAdmin.teachers && loadedAdmin.teachers.length > 0)
-          ? loadedAdmin.teachers
-          : DEFAULT_TEACHERS.slice();
+        adminState.subjectsMap = loadedAdmin.subjectsMap || cloneObj(SUBJECT_CATALOG);
+        // Normalize teachers list to objects { name, role }
+        var rawTeachers = loadedAdmin.teachers || [];
+        var normTeachers = [];
+        for (idx = 0; idx < rawTeachers.length; idx++) {
+          var t = rawTeachers[idx];
+          if (typeof t === 'string' && t.trim()) {
+            normTeachers.push({ name: t.trim(), role: '' });
+          } else if (t && t.name) {
+            normTeachers.push({ name: String(t.name).trim(), role: String(t.role || '').trim() });
+          }
+        }
+        adminState.teachers = normTeachers;
       } else {
         adminState = {
           classes: cloneObj(DEFAULT_CLASSES),
-          subjects: cloneObj(DEFAULT_SUBJECTS),
-          teachers: DEFAULT_TEACHERS.slice()
+          subjectsMap: cloneObj(SUBJECT_CATALOG),
+          teachers: []
         };
         saveAdminStorage();
       }
@@ -1678,11 +1892,10 @@
           var parsedRows = JSON.parse(rawRows);
           diaryRows = (parsedRows && parsedRows.length !== undefined) ? parsedRows : [];
         } catch (e2) {
-          diaryRows = cloneObj(SAMPLE_DIARY_ROWS);
+          diaryRows = [];
         }
       } else {
-        diaryRows = cloneObj(SAMPLE_DIARY_ROWS);
-        saveRowsStorage();
+        diaryRows = [];
       }
 
       var rawArchive = safeStorageGet(STORAGE_KEYS.ARCHIVE);
@@ -1807,7 +2020,6 @@
       reader.onload = function (ev) {
         var tempImg = new Image();
         tempImg.onload = function () {
-          // Downscale logo to 160x160 max so memory remains ultra-lightweight
           var c = document.createElement('canvas');
           c.width = 160;
           c.height = 160;
@@ -1841,7 +2053,7 @@
     }
 
     // -----------------------------------------------------------------------
-    // 5. AUTOMATIC DATE & DAY HELPERS (ZERO REGEX)
+    // 5. AUTOMATIC DATE & DAY HELPERS
     // -----------------------------------------------------------------------
     var DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     var MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -1903,8 +2115,18 @@
     }
 
     // -----------------------------------------------------------------------
-    // 6. DROPDOWNS & CASCADING CLASS -> SECTION SELECTION
+    // 6. CLASS-WISE SUBJECTS & CASCADING CLASS -> SECTION + SUBJECT FILTERING
     // -----------------------------------------------------------------------
+    function findSubjectById(subId) {
+      if (adminState.subjectsMap && adminState.subjectsMap[subId]) {
+        return adminState.subjectsMap[subId];
+      }
+      if (SUBJECT_CATALOG[subId]) {
+        return SUBJECT_CATALOG[subId];
+      }
+      return { id: subId, name: 'Subject', color: 'blue' };
+    }
+
     function updateActiveClassThemePill(className) {
       var pill = document.getElementById('active-class-theme-pill');
       var text = document.getElementById('active-class-theme-text');
@@ -1915,16 +2137,102 @@
       text.textContent = shortLabel + ' Header';
     }
 
+    function populateSubjectsForSelectedClass() {
+      var className = document.getElementById('select-class').value || 'Class 1';
+      var clsObj = getClassObjByName(className);
+      var subIds = (clsObj && clsObj.subjectIds) ? clsObj.subjectIds : SUBS_C1_C3;
+
+      var subSel = document.getElementById('select-subject');
+      var prevSub = subSel.value;
+      var subOpts = '';
+      var hasPrevSub = false;
+      var i;
+
+      for (i = 0; i < subIds.length; i++) {
+        var subObj = findSubjectById(subIds[i]);
+        if (subObj.id === prevSub) hasPrevSub = true;
+        subOpts += '<option value="' + escapeHtml(subObj.id) + '">' + escapeHtml(subObj.name) + '</option>';
+      }
+
+      subSel.innerHTML = subOpts;
+      if (hasPrevSub) {
+        subSel.value = prevSub;
+      } else if (subIds.length > 0) {
+        subSel.value = subIds[0];
+      }
+
+      var badgeEl = document.getElementById('subject-class-badge');
+      var hintEl = document.getElementById('subject-count-hint');
+      if (badgeEl) badgeEl.textContent = className;
+      if (hintEl) hintEl.textContent = subIds.length + ' Class Subjects';
+    }
+
+    function syncTeacherDropdownInDiary() {
+      var savedSel = document.getElementById('select-teacher-saved');
+      var nameInput = document.getElementById('input-teacher-name');
+      var countBadge = document.getElementById('teachers-count-badge');
+      if (countBadge) countBadge.textContent = adminState.teachers.length;
+
+      if (!savedSel) return;
+
+      if (adminState.teachers.length > 0) {
+        savedSel.style.display = 'block';
+        var opts = '<option value="">— Quick Pick from Saved Teachers (' + adminState.teachers.length + ') —</option>';
+        var i;
+        for (i = 0; i < adminState.teachers.length; i++) {
+          var t = adminState.teachers[i];
+          var label = t.role ? (t.name + ' (' + t.role + ')') : t.name;
+          opts += '<option value="' + escapeHtml(t.name) + '">' + escapeHtml(label) + '</option>';
+        }
+        savedSel.innerHTML = opts;
+
+        // Auto-fill if input is currently blank
+        if (nameInput && !nameInput.value.trim()) {
+          nameInput.value = adminState.teachers[0].name;
+          savedSel.value = adminState.teachers[0].name;
+        }
+      } else {
+        savedSel.style.display = 'none';
+        savedSel.innerHTML = '';
+      }
+    }
+
+    function onSelectSavedTeacher() {
+      var savedSel = document.getElementById('select-teacher-saved');
+      var nameInput = document.getElementById('input-teacher-name');
+      if (savedSel && savedSel.value && nameInput) {
+        nameInput.value = savedSel.value;
+        safeStorageSet(STORAGE_KEYS.ACTIVE_TEACHER, savedSel.value);
+        renderLivePreview();
+      }
+    }
+
+    function quickSaveTeacherFromDiary() {
+      var nameInput = document.getElementById('input-teacher-name');
+      var tName = nameInput ? nameInput.value.trim() : '';
+      if (!tName) {
+        showToast('Type a teacher name first, then tap + Save.', true);
+        return;
+      }
+      addTeacherRecord(tName, '');
+      showToast('Saved "' + tName + '" to Teachers Tab!');
+    }
+
     function populateDropdowns() {
       var i;
       var classSel = document.getElementById('select-class');
+      var adminTargetClassSel = document.getElementById('admin-subject-target-class');
       var prevClass = classSel.value;
       var classOpts = '';
+
       for (i = 0; i < adminState.classes.length; i++) {
         var cName = adminState.classes[i].name;
         classOpts += '<option value="' + escapeHtml(cName) + '">' + escapeHtml(cName) + '</option>';
       }
       classSel.innerHTML = classOpts;
+      if (adminTargetClassSel) {
+        adminTargetClassSel.innerHTML = classOpts;
+      }
 
       var hasPrev = false;
       for (i = 0; i < adminState.classes.length; i++) {
@@ -1948,36 +2256,7 @@
       }
 
       onClassChange(false);
-
-      var teacherSel = document.getElementById('select-teacher');
-      var prevTeacher = teacherSel.value;
-      var teacherOpts = '';
-      for (i = 0; i < adminState.teachers.length; i++) {
-        var tName = adminState.teachers[i];
-        teacherOpts += '<option value="' + escapeHtml(tName) + '">' + escapeHtml(tName) + '</option>';
-      }
-      teacherSel.innerHTML = teacherOpts;
-      if (prevTeacher && adminState.teachers.indexOf(prevTeacher) !== -1) {
-        teacherSel.value = prevTeacher;
-      } else if (adminState.teachers.length > 0) {
-        teacherSel.value = adminState.teachers[0];
-      }
-
-      var subSel = document.getElementById('select-subject');
-      var prevSub = subSel.value;
-      var subOpts = '';
-      var hasPrevSub = false;
-      for (i = 0; i < adminState.subjects.length; i++) {
-        var subObj = adminState.subjects[i];
-        if (subObj.id === prevSub) hasPrevSub = true;
-        subOpts += '<option value="' + escapeHtml(subObj.id) + '">' + escapeHtml(subObj.name) + '</option>';
-      }
-      subSel.innerHTML = subOpts;
-      if (hasPrevSub) {
-        subSel.value = prevSub;
-      } else if (adminState.subjects.length > 0) {
-        subSel.value = adminState.subjects[0].id;
-      }
+      syncTeacherDropdownInDiary();
 
       var classThemeSel = document.getElementById('admin-class-theme');
       if (classThemeSel) {
@@ -2007,20 +2286,13 @@
       var secSel = document.getElementById('select-section');
       var selectedClassName = classSel.value;
 
-      var clsObj = adminState.classes[0];
-      var i;
-      for (i = 0; i < adminState.classes.length; i++) {
-        if (adminState.classes[i].name === selectedClassName) {
-          clsObj = adminState.classes[i];
-          break;
-        }
-      }
-
+      var clsObj = getClassObjByName(selectedClassName);
       var secs = (clsObj && clsObj.sections) ? clsObj.sections : ['All Sections'];
       updateActiveClassThemePill(selectedClassName);
 
       var prevSec = secSel.value;
       var secOpts = '';
+      var i;
       for (i = 0; i < secs.length; i++) {
         secOpts += '<option value="' + escapeHtml(secs[i]) + '">' + escapeHtml(secs[i]) + '</option>';
       }
@@ -2032,6 +2304,9 @@
         secSel.value = secs[0];
       }
 
+      // Dynamically filter Subject dropdown to ONLY this class's assigned subjects
+      populateSubjectsForSelectedClass();
+
       if (shouldRender) {
         renderLivePreview();
       }
@@ -2040,16 +2315,6 @@
     // -----------------------------------------------------------------------
     // 7. HOMEWORK ROWS CRUD (SUBJECT | HOMEWORK | DETAIL)
     // -----------------------------------------------------------------------
-    function findSubjectById(subId) {
-      var i;
-      for (i = 0; i < adminState.subjects.length; i++) {
-        if (adminState.subjects[i].id === subId) {
-          return adminState.subjects[i];
-        }
-      }
-      return { id: subId, name: 'Subject', color: 'blue' };
-    }
-
     function handleSaveRow(e) {
       e.preventDefault();
       var editId = document.getElementById('edit-row-id').value;
@@ -2101,7 +2366,23 @@
       if (!row) return;
 
       document.getElementById('edit-row-id').value = row.id;
-      document.getElementById('select-subject').value = row.subjectId;
+      var subSel = document.getElementById('select-subject');
+      // Ensure option exists if editing a row from another class
+      var hasOpt = false;
+      for (i = 0; i < subSel.options.length; i++) {
+        if (subSel.options[i].value === row.subjectId) {
+          hasOpt = true;
+          break;
+        }
+      }
+      if (!hasOpt) {
+        var subObj = findSubjectById(row.subjectId);
+        var opt = document.createElement('option');
+        opt.value = subObj.id;
+        opt.textContent = subObj.name;
+        subSel.appendChild(opt);
+      }
+      subSel.value = row.subjectId;
       document.getElementById('input-homework').value = row.homework;
       document.getElementById('input-detail').value = row.detail || '';
 
@@ -2140,12 +2421,38 @@
     }
 
     function loadSampleDiary() {
-      diaryRows = cloneObj(SAMPLE_DIARY_ROWS);
+      var className = document.getElementById('select-class').value || 'Class 1';
+      var clsObj = getClassObjByName(className);
+      var subIds = (clsObj && clsObj.subjectIds) ? clsObj.subjectIds : SUBS_C1_C3;
+      var s1 = subIds[0] || 'sub_eng';
+      var s2 = subIds[1] || 'sub_urdu';
+      var s3 = subIds[2] || 'sub_math';
+
+      diaryRows = [
+        {
+          id: 'row_sample_1',
+          subjectId: s1,
+          homework: 'Learn & Write Q/A # 1 to 3 on Homework Notebook.',
+          detail: 'Unit 2: Reading & Comprehension, Pg 18'
+        },
+        {
+          id: 'row_sample_2',
+          subjectId: s2,
+          homework: 'Read Lesson 3 carefully & write difficult words 3 times.',
+          detail: 'Page # 22-23, Neat Notebook Work'
+        },
+        {
+          id: 'row_sample_3',
+          subjectId: s3,
+          homework: 'Solve Exercise 2.4 (Q # 1 to 5) neatly.',
+          detail: 'Chapter 2: Practice Questions, Pg 34'
+        }
+      ];
       cancelEdit();
       saveRowsStorage();
       renderAddedRows();
       renderLivePreview();
-      showToast('Sample homework rows loaded!');
+      showToast('Sample rows loaded for ' + className + '!');
     }
 
     function clearAllRows() {
@@ -2165,7 +2472,7 @@
       if (diaryRows.length === 0) {
         listEl.innerHTML =
           '<div style="text-align:center; padding:18px 10px; color:#64748b; font-size:13px; background:#f8fafc; border-radius:12px; border:1px dashed #cbd5e1;">' +
-          'No homework rows added yet. Use the form above to add Subject, Homework & Detail.' +
+          'No homework rows added yet. Select a subject above and add today\'s homework.' +
           '</div>';
         return;
       }
@@ -2193,12 +2500,21 @@
     }
 
     // -----------------------------------------------------------------------
-    // 8. LIGHTWEIGHT DOM LIVE PREVIEW (INSTANT, ZERO GPU/CANVAS OVERHEAD)
+    // 8. LIGHTWEIGHT DOM LIVE PREVIEW (WITH AUTO DAILY MOTIVATIONAL QUOTE)
     // -----------------------------------------------------------------------
+    function getActiveTeacherName() {
+      var input = document.getElementById('input-teacher-name');
+      var val = input ? input.value.trim() : '';
+      if (val) {
+        safeStorageSet(STORAGE_KEYS.ACTIVE_TEACHER, val);
+      }
+      return val;
+    }
+
     function renderLivePreview() {
       var className = document.getElementById('select-class').value || 'Class 1';
       var sectionName = document.getElementById('select-section').value || 'All Sections';
-      var teacherName = document.getElementById('select-teacher').value || 'Class Teacher';
+      var teacherName = getActiveTeacherName() || 'Class Teacher';
       var dateIso = document.getElementById('diary-date').value || getTodayISO();
       var dateInfo = parseDateInfo(dateIso);
       var noteInput = document.getElementById('input-footer-note');
@@ -2259,6 +2575,12 @@
         footerBrand.style.color = theme.tableBar;
       }
 
+      // Daily Motivational Quote
+      var quoteTextEl = document.getElementById('live-quote-text');
+      if (quoteTextEl) {
+        quoteTextEl.textContent = '"' + getDailyQuoteText() + '"';
+      }
+
       document.getElementById('live-sheet-note').textContent = '★  ' + noteText;
 
       var rowsContainer = document.getElementById('live-diary-rows');
@@ -2289,7 +2611,7 @@
     }
 
     // -----------------------------------------------------------------------
-    // 9. ON-DEMAND MEMORY-SAFE 720PX CANVAS JPG GENERATOR
+    // 9. ON-DEMAND MEMORY-SAFE 720PX CANVAS JPG GENERATOR (INCLUDES QUOTE)
     // -----------------------------------------------------------------------
     function sanitizeFilenamePart(str) {
       var out = '';
@@ -2521,12 +2843,11 @@
     }
 
     function createDiaryJpgDataUrl() {
-      // Lightweight 720px width prevents Android WebView GPU OOM crashes
       var W = 720;
       var pad = 22;
       var innerW = W - pad * 2;
-      var col1W = 148;
-      var col2W = 304;
+      var col1W = 152;
+      var col2W = 300;
       var col3W = innerW - col1W - col2W;
       var fontStack = 'Arial, Helvetica, sans-serif';
 
@@ -2545,8 +2866,8 @@
         var sub = findSubjectById(r.subjectId);
         var pal = COLOR_PALETTES[sub.color] || COLOR_PALETTES.blue;
 
-        mCtx.font = 'bold 14px ' + fontStack;
-        var subLines = wrapCanvasText(mCtx, sub.name, col1W - 26);
+        mCtx.font = 'bold 13.5px ' + fontStack;
+        var subLines = wrapCanvasText(mCtx, sub.name, col1W - 24);
 
         mCtx.font = 'bold 16px ' + fontStack;
         var hwLines = wrapCanvasText(mCtx, r.homework, col2W - 22);
@@ -2554,7 +2875,7 @@
         mCtx.font = 'normal 14px ' + fontStack;
         var detLines = wrapCanvasText(mCtx, r.detail || '—', col3W - 22);
 
-        var subH = subLines.length * 19 + 20;
+        var subH = subLines.length * 18 + 20;
         var hwH = hwLines.length * 21 + 22;
         var detH = detLines.length * 19 + 22;
         var rowH = Math.max(58, subH, hwH, detH);
@@ -2569,6 +2890,13 @@
         rowsTotalH += rowH + 10;
       }
 
+      // Measure Daily Motivational Quote Box
+      var quoteFullText = '"' + getDailyQuoteText() + '"';
+      mCtx.font = 'italic bold 14px ' + fontStack;
+      var quoteLines = wrapCanvasText(mCtx, quoteFullText, innerW - 34);
+      var quoteBoxH = quoteLines.length * 19 + 34;
+
+      // Measure Teacher Note Box
       var noteInput = document.getElementById('input-footer-note');
       var noteText = (noteInput && noteInput.value.trim())
         ? noteInput.value.trim()
@@ -2577,15 +2905,14 @@
       var noteLines = wrapCanvasText(mCtx, '★  ' + noteText, innerW - 30);
       var noteBoxH = noteLines.length * 19 + 20;
 
-      // Release measurement canvas immediately
       mCanvas.width = 0;
       mCanvas.height = 0;
 
       var rainbowH = 10;
       var headerH = 178;
       var tableHeadH = 38;
-      var footerH = noteBoxH + 78;
-      var totalH = Math.min(2400, rainbowH + headerH + tableHeadH + rowsTotalH + footerH + rainbowH);
+      var footerH = quoteBoxH + 10 + noteBoxH + 78;
+      var totalH = Math.min(2600, rainbowH + headerH + tableHeadH + rowsTotalH + footerH + rainbowH);
 
       var canvas = document.createElement('canvas');
       canvas.width = W;
@@ -2607,7 +2934,7 @@
       // 2. Class-Specific Header Banner
       var className = document.getElementById('select-class').value || 'Class 1';
       var sectionName = document.getElementById('select-section').value || 'All Sections';
-      var teacherName = document.getElementById('select-teacher').value || 'Class Teacher';
+      var teacherName = getActiveTeacherName() || 'Class Teacher';
       var headerTheme = getHeaderThemeForClass(className);
 
       var curY = rainbowH;
@@ -2738,7 +3065,6 @@
         ctx.fillRect(pad + col1W + col2W, curY, col3W, rowH);
         ctx.restore();
 
-        // Column Dividers
         ctx.strokeStyle = 'rgba(15, 23, 42, 0.12)';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
@@ -2749,18 +3075,18 @@
         ctx.stroke();
 
         // Column 1: Subject Badge
-        var badgeH = subLines.length * 19 + 12;
+        var badgeH = subLines.length * 18 + 12;
         var badgeY = curY + (rowH - badgeH) / 2;
         drawRoundRect(ctx, pad + 14, badgeY, col1W - 22, badgeH, 8);
         ctx.fillStyle = pal.badge;
         ctx.fill();
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px ' + fontStack;
+        ctx.font = 'bold 13.5px ' + fontStack;
         ctx.textAlign = 'left';
         var lIdx;
         for (lIdx = 0; lIdx < subLines.length; lIdx++) {
-          ctx.fillText(subLines[lIdx], pad + 22, badgeY + 19 + lIdx * 19);
+          ctx.fillText(subLines[lIdx], pad + 21, badgeY + 18 + lIdx * 18);
         }
 
         // Column 2: Homework Text
@@ -2784,7 +3110,7 @@
         curY += rowH + 10;
       }
 
-      // 5. Footer Section
+      // 5. Footer Section: Daily Motivational Quote + Teacher Note + Signatures
       curY += 4;
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(0, curY, W, footerH);
@@ -2796,7 +3122,36 @@
       ctx.lineTo(W, curY);
       ctx.stroke();
 
-      var noteY = curY + 12;
+      // Daily Motivational Quote Card
+      var quoteY = curY + 12;
+      drawRoundRect(ctx, pad, quoteY, innerW, quoteBoxH, 10);
+      ctx.fillStyle = '#eef2ff';
+      ctx.fill();
+      ctx.strokeStyle = '#c7d2fe';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.save();
+      drawRoundRect(ctx, pad, quoteY, innerW, quoteBoxH, 10);
+      ctx.clip();
+      ctx.fillStyle = '#4338ca';
+      ctx.fillRect(pad, quoteY, 6, quoteBoxH);
+      ctx.restore();
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#3730a3';
+      ctx.font = 'bold 11px ' + fontStack;
+      ctx.fillText('✦ THOUGHT OF THE DAY', pad + 14, quoteY + 18);
+
+      ctx.fillStyle = '#1e1b4b';
+      ctx.font = 'italic bold 14px ' + fontStack;
+      var qIdx;
+      for (qIdx = 0; qIdx < quoteLines.length; qIdx++) {
+        ctx.fillText(quoteLines[qIdx], pad + 14, quoteY + 37 + qIdx * 19);
+      }
+
+      // Teacher Note Card
+      var noteY = quoteY + quoteBoxH + 10;
       drawRoundRect(ctx, pad, noteY, innerW, noteBoxH, 10);
       ctx.fillStyle = '#fffbeb';
       ctx.fill();
@@ -2843,7 +3198,6 @@
 
       var resultDataUrl = canvas.toDataURL('image/jpeg', 0.90);
 
-      // Immediately free GPU/renderer canvas memory
       canvas.width = 0;
       canvas.height = 0;
 
@@ -2851,6 +3205,14 @@
     }
 
     function generateAndOpenJpgModal() {
+      var teacherName = getActiveTeacherName();
+      if (!teacherName) {
+        showToast('Please enter or select the Class Teacher Name first!', true);
+        var tInput = document.getElementById('input-teacher-name');
+        if (tInput) tInput.focus();
+        return;
+      }
+
       if (diaryRows.length === 0) {
         showToast('Please add at least one Subject & Homework row first!', true);
         return;
@@ -2871,7 +3233,6 @@
         document.getElementById('modal-file-name').textContent = filename;
         document.getElementById('jpg-modal').classList.add('open');
 
-        // Save lightweight metadata in archive (no huge base64 duplication in localStorage)
         var info = parseDateInfo(dateIso);
         archiveList.unshift({
           id: 'arch_' + Date.now(),
@@ -2880,7 +3241,7 @@
           shortDate: info.shortDate,
           className: className,
           sectionName: sectionName,
-          teacherName: document.getElementById('select-teacher').value || 'Teacher',
+          teacherName: teacherName,
           note: document.getElementById('input-footer-note').value.trim(),
           rows: cloneObj(diaryRows),
           filename: filename
@@ -2988,8 +3349,179 @@
     }
 
     // -----------------------------------------------------------------------
-    // 10. ADMIN SETUP MANAGEMENT
+    // 10. DEDICATED TEACHERS TAB MANAGEMENT (STARTS EMPTY, PERSISTS IN STORAGE)
     // -----------------------------------------------------------------------
+    function addTeacherRecord(name, role) {
+      var cleanName = String(name || '').trim();
+      var cleanRole = String(role || '').trim();
+      if (!cleanName) return;
+
+      var exists = false;
+      var i;
+      for (i = 0; i < adminState.teachers.length; i++) {
+        if (adminState.teachers[i].name.toLowerCase() === cleanName.toLowerCase()) {
+          adminState.teachers[i].role = cleanRole || adminState.teachers[i].role;
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        adminState.teachers.push({ name: cleanName, role: cleanRole });
+      }
+      saveAdminStorage();
+      syncTeacherDropdownInDiary();
+      renderTeachersDirectory();
+    }
+
+    function handleAddTeacherFromTab(e) {
+      e.preventDefault();
+      var nameEl = document.getElementById('teachers-tab-name');
+      var roleEl = document.getElementById('teachers-tab-role');
+      var tName = nameEl.value.trim();
+      var tRole = roleEl.value.trim();
+      if (!tName) return;
+
+      addTeacherRecord(tName, tRole);
+      nameEl.value = '';
+      roleEl.value = '';
+      showToast('Teacher "' + tName + '" added!');
+    }
+
+    function removeTeacherRecord(idx) {
+      adminState.teachers.splice(idx, 1);
+      saveAdminStorage();
+      syncTeacherDropdownInDiary();
+      renderTeachersDirectory();
+      showToast('Teacher removed.');
+    }
+
+    function clearAllTeachers() {
+      adminState.teachers = [];
+      saveAdminStorage();
+      syncTeacherDropdownInDiary();
+      renderTeachersDirectory();
+      showToast('All saved teachers cleared.');
+    }
+
+    function useTeacherInDiary(idx) {
+      var t = adminState.teachers[idx];
+      if (!t) return;
+      var nameInput = document.getElementById('input-teacher-name');
+      var savedSel = document.getElementById('select-teacher-saved');
+      if (nameInput) nameInput.value = t.name;
+      if (savedSel) savedSel.value = t.name;
+      safeStorageSet(STORAGE_KEYS.ACTIVE_TEACHER, t.name);
+      renderLivePreview();
+      switchTab('diary');
+      showToast('Selected "' + t.name + '" for today\'s diary!');
+    }
+
+    function renderTeachersDirectory() {
+      var container = document.getElementById('teachers-directory-container');
+      var listBadge = document.getElementById('teachers-list-badge');
+      var navBadge = document.getElementById('teachers-count-badge');
+
+      if (listBadge) listBadge.textContent = adminState.teachers.length;
+      if (navBadge) navBadge.textContent = adminState.teachers.length;
+      if (!container) return;
+
+      if (adminState.teachers.length === 0) {
+        container.innerHTML =
+          '<div style="text-align:center; padding:28px 14px; color:#64748b; font-size:13px; background:#f8fafc; border-radius:12px; border:1px dashed #cbd5e1;">' +
+          'No teachers added yet. Add teachers using the form on the left, or type any teacher name directly in the Teacher Diary tab.' +
+          '</div>';
+        return;
+      }
+
+      var html = '<div class="teacher-directory-grid">';
+      var i;
+      for (i = 0; i < adminState.teachers.length; i++) {
+        var t = adminState.teachers[i];
+        var initials = t.name.substring(0, 2).toUpperCase();
+        html +=
+          '<div class="teacher-card-item">' +
+            '<div style="display:flex; align-items:center; gap:10px; min-width:0;">' +
+              '<div class="teacher-avatar">' + escapeHtml(initials) + '</div>' +
+              '<div style="min-width:0;">' +
+                '<div style="font-size:13.5px; font-weight:800; color:#0f172a; word-break:break-word;">' + escapeHtml(t.name) + '</div>' +
+                (t.role ? '<div style="font-size:11.5px; color:#64748b;">' + escapeHtml(t.role) + '</div>' : '') +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex; gap:5px; flex-shrink:0;">' +
+              '<button type="button" class="btn btn-soft" style="padding:5px 9px; font-size:11px;" onclick="useTeacherInDiary(' + i + ')">Use</button>' +
+              '<button type="button" class="btn-danger-soft" style="padding:5px 8px; font-size:11px;" onclick="removeTeacherRecord(' + i + ')">✕</button>' +
+            '</div>' +
+          '</div>';
+      }
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // -----------------------------------------------------------------------
+    // 11. ADMIN SETUP (CLASS-WISE SUBJECTS & CLASS SECTIONS/THEMES)
+    // -----------------------------------------------------------------------
+    function handleAddSubjectToClass(e) {
+      e.preventDefault();
+      var targetClassName = document.getElementById('admin-subject-target-class').value;
+      var subName = document.getElementById('admin-new-subject').value.trim();
+      var subColor = document.getElementById('admin-subject-color').value || 'blue';
+      if (!targetClassName || !subName) return;
+
+      // Reuse existing subject ID if same name exists, or create new
+      var subId = null;
+      var allKeys = Object.keys(adminState.subjectsMap);
+      var i;
+      for (i = 0; i < allKeys.length; i++) {
+        var existingSub = adminState.subjectsMap[allKeys[i]];
+        if (existingSub && existingSub.name.toLowerCase() === subName.toLowerCase()) {
+          subId = existingSub.id;
+          existingSub.color = subColor;
+          break;
+        }
+      }
+      if (!subId) {
+        subId = 'sub_custom_' + Date.now();
+        adminState.subjectsMap[subId] = { id: subId, name: subName, color: subColor };
+      }
+
+      var clsObj = getClassObjByName(targetClassName);
+      if (clsObj) {
+        if (!clsObj.subjectIds) clsObj.subjectIds = [];
+        if (clsObj.subjectIds.indexOf(subId) === -1) {
+          clsObj.subjectIds.push(subId);
+        }
+      }
+
+      document.getElementById('admin-new-subject').value = '';
+      saveAdminStorage();
+      populateSubjectsForSelectedClass();
+      renderAdminLists();
+      renderAddedRows();
+      renderLivePreview();
+      showToast('Added "' + subName + '" to ' + targetClassName + '!');
+    }
+
+    function removeSubjectFromClass(classIndex, subId) {
+      var clsObj = adminState.classes[classIndex];
+      if (!clsObj || !clsObj.subjectIds) return;
+      if (clsObj.subjectIds.length <= 1) {
+        showToast('Each class must keep at least one subject.', true);
+        return;
+      }
+      var nextIds = [];
+      var i;
+      for (i = 0; i < clsObj.subjectIds.length; i++) {
+        if (clsObj.subjectIds[i] !== subId) {
+          nextIds.push(clsObj.subjectIds[i]);
+        }
+      }
+      clsObj.subjectIds = nextIds;
+      saveAdminStorage();
+      populateSubjectsForSelectedClass();
+      renderAdminLists();
+      showToast('Subject removed from ' + clsObj.name + '.');
+    }
+
     function handleAddClass(e) {
       e.preventDefault();
       var name = document.getElementById('admin-new-class').value.trim();
@@ -3028,7 +3560,12 @@
           }
         }
       } else {
-        adminState.classes.push({ name: name, theme: themeKey, sections: sections });
+        adminState.classes.push({
+          name: name,
+          theme: themeKey,
+          sections: sections,
+          subjectIds: SUBS_C1_C3.slice()
+        });
       }
 
       document.getElementById('admin-new-class').value = '';
@@ -3037,7 +3574,7 @@
       populateDropdowns();
       renderAdminLists();
       renderLivePreview();
-      showToast('Saved ' + name + ' with Header Color Scheme!');
+      showToast('Saved ' + name + ' & Header Theme!');
     }
 
     function removeClass(idx) {
@@ -3052,89 +3589,59 @@
       renderLivePreview();
     }
 
-    function handleAddSubject(e) {
-      e.preventDefault();
-      var name = document.getElementById('admin-new-subject').value.trim();
-      var color = document.getElementById('admin-subject-color').value;
-      if (!name) return;
-
-      adminState.subjects.push({
-        id: 'sub_' + Date.now(),
-        name: name,
-        color: color
-      });
-      document.getElementById('admin-new-subject').value = '';
-      saveAdminStorage();
-      populateDropdowns();
-      renderAdminLists();
-      showToast('Added subject: ' + name);
-    }
-
-    function removeSubject(id) {
-      if (adminState.subjects.length <= 1) {
-        showToast('At least one subject must remain.', true);
-        return;
-      }
-      var nextSubs = [];
-      var i;
-      for (i = 0; i < adminState.subjects.length; i++) {
-        if (adminState.subjects[i].id !== id) {
-          nextSubs.push(adminState.subjects[i]);
-        }
-      }
-      adminState.subjects = nextSubs;
-      saveAdminStorage();
-      populateDropdowns();
-      renderAdminLists();
-      renderAddedRows();
-      renderLivePreview();
-    }
-
-    function handleAddTeacher(e) {
-      e.preventDefault();
-      var name = document.getElementById('admin-new-teacher').value.trim();
-      if (!name) return;
-      if (adminState.teachers.indexOf(name) === -1) {
-        adminState.teachers.push(name);
-      }
-      document.getElementById('admin-new-teacher').value = '';
-      saveAdminStorage();
-      populateDropdowns();
-      renderAdminLists();
-      showToast('Added teacher: ' + name);
-    }
-
-    function removeTeacher(idx) {
-      if (adminState.teachers.length <= 1) {
-        showToast('At least one teacher must remain.', true);
-        return;
-      }
-      adminState.teachers.splice(idx, 1);
-      saveAdminStorage();
-      populateDropdowns();
-      renderAdminLists();
-      renderLivePreview();
-    }
-
     function resetAdminDefaults() {
+      var preservedTeachers = adminState.teachers.slice();
       adminState = {
         classes: cloneObj(DEFAULT_CLASSES),
-        subjects: cloneObj(DEFAULT_SUBJECTS),
-        teachers: DEFAULT_TEACHERS.slice()
+        subjectsMap: cloneObj(SUBJECT_CATALOG),
+        teachers: preservedTeachers
       };
       saveAdminStorage();
       populateDropdowns();
       renderAdminLists();
       renderLivePreview();
-      showToast('Default classes, header themes, sections, subjects & teachers restored!');
+      showToast('Restored official Class-Wise Subjects & Header Themes!');
     }
 
     function renderAdminLists() {
       var i, j;
+
+      // 1. Render Class-Wise Subjects Breakdown
+      var classSubHtml = '';
+      for (i = 0; i < adminState.classes.length; i++) {
+        var cls = adminState.classes[i];
+        var theme = getHeaderThemeForClass(cls.name);
+        var subIds = cls.subjectIds || [];
+        var subBadges = '';
+        for (j = 0; j < subIds.length; j++) {
+          var sub = findSubjectById(subIds[j]);
+          var pal = COLOR_PALETTES[sub.color] || COLOR_PALETTES.blue;
+          subBadges +=
+            '<span class="chip" style="background:' + pal.bg + '; border-color:' + pal.border + '; color:#0f172a;">' +
+              '<span style="width:7px; height:7px; border-radius:50%; background:' + pal.badge + '; display:inline-block;"></span>' +
+              escapeHtml(sub.name) +
+              '<span class="chip-del" title="Remove from ' + escapeHtml(cls.name) + '" onclick="removeSubjectFromClass(' + i + ',\'' + escapeHtml(sub.id) + '\')">×</span>' +
+            '</span>';
+        }
+        classSubHtml +=
+          '<div class="admin-list-item">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+              '<div style="display:flex; align-items:center; gap:7px;">' +
+                '<span style="width:12px; height:12px; border-radius:4px; background:linear-gradient(135deg,' + theme.gradStart + ',' + theme.gradEnd + '); display:inline-block;"></span>' +
+                '<strong style="font-size:13.5px;">' + escapeHtml(cls.name) + '</strong>' +
+              '</div>' +
+              '<span style="font-size:11px; font-weight:700; color:#64748b;">' + subIds.length + ' subjects</span>' +
+            '</div>' +
+            '<div class="chip-list">' + subBadges + '</div>' +
+          '</div>';
+      }
+      document.getElementById('admin-class-subjects-list').innerHTML = classSubHtml;
+
+      // 2. Render Classes & Sections
       var clsHtml = '';
       for (i = 0; i < adminState.classes.length; i++) {
         var c = adminState.classes[i];
-        var theme = getHeaderThemeForClass(c.name);
+        var cTheme = getHeaderThemeForClass(c.name);
         var chips = '';
         for (j = 0; j < c.sections.length; j++) {
           var s = c.sections[j];
@@ -3144,7 +3651,7 @@
           '<div class="admin-list-item">' +
             '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
               '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' +
-                '<span style="width:14px; height:14px; border-radius:4px; background:linear-gradient(135deg,' + theme.gradStart + ',' + theme.gradEnd + '); display:inline-block; flex-shrink:0;"></span>' +
+                '<span style="width:14px; height:14px; border-radius:4px; background:linear-gradient(135deg,' + cTheme.gradStart + ',' + cTheme.gradEnd + '); display:inline-block; flex-shrink:0;"></span>' +
                 '<strong style="font-size:13.5px;">' + escapeHtml(c.name) + '</strong>' +
               '</div>' +
               '<button type="button" class="btn-danger-soft" onclick="removeClass(' + i + ')">Delete</button>' +
@@ -3153,32 +3660,10 @@
           '</div>';
       }
       document.getElementById('admin-classes-list').innerHTML = clsHtml;
-
-      var subHtml = '';
-      for (i = 0; i < adminState.subjects.length; i++) {
-        var sub = adminState.subjects[i];
-        var pal = COLOR_PALETTES[sub.color] || COLOR_PALETTES.blue;
-        subHtml +=
-          '<div class="admin-list-item" style="display:flex; align-items:center; justify-content:space-between; background:' + pal.bg + '; border-color:' + pal.border + ';">' +
-            '<span style="background:' + pal.badge + '; color:#fff; padding:3px 10px; border-radius:7px; font-size:12px; font-weight:800;">' + escapeHtml(sub.name) + '</span>' +
-            '<button type="button" class="btn-danger-soft" onclick="removeSubject(\'' + sub.id + '\')">Remove</button>' +
-          '</div>';
-      }
-      document.getElementById('admin-subjects-list').innerHTML = subHtml;
-
-      var tchHtml = '';
-      for (i = 0; i < adminState.teachers.length; i++) {
-        tchHtml +=
-          '<div class="admin-list-item" style="display:flex; align-items:center; justify-content:space-between;">' +
-            '<span style="font-size:13px; font-weight:700;">' + escapeHtml(adminState.teachers[i]) + '</span>' +
-            '<button type="button" class="btn-danger-soft" onclick="removeTeacher(' + i + ')">Remove</button>' +
-          '</div>';
-      }
-      document.getElementById('admin-teachers-list').innerHTML = tchHtml;
     }
 
     // -----------------------------------------------------------------------
-    // 11. SAVED ARCHIVE RENDERING (LIGHTWEIGHT METADATA)
+    // 12. SAVED ARCHIVE RENDERING
     // -----------------------------------------------------------------------
     function renderArchive() {
       document.getElementById('archive-count-badge').textContent = archiveList.length;
@@ -3231,7 +3716,8 @@
       document.getElementById('select-class').value = item.className;
       onClassChange(false);
       document.getElementById('select-section').value = item.sectionName;
-      document.getElementById('select-teacher').value = item.teacherName;
+      var tInput = document.getElementById('input-teacher-name');
+      if (tInput) tInput.value = item.teacherName || '';
       document.getElementById('diary-date').value = item.dateIso;
       document.getElementById('input-footer-note').value = item.note || '';
       diaryRows = cloneObj(item.rows || []);
@@ -3262,7 +3748,7 @@
     }
 
     // -----------------------------------------------------------------------
-    // 12. NAVIGATION TABS, UTILITIES & IMMEDIATE STARTUP INITIALIZATION
+    // 13. NAVIGATION TABS, UTILITIES & STARTUP INITIALIZATION
     // -----------------------------------------------------------------------
     function switchTab(tabName) {
       var panels = document.querySelectorAll('.tab-panel');
@@ -3321,7 +3807,15 @@
         }
         updateHeaderAndDayDisplay();
 
+        // Restore last used teacher name only if user previously typed one
+        var savedActiveTeacher = safeStorageGet(STORAGE_KEYS.ACTIVE_TEACHER);
+        var tInput = document.getElementById('input-teacher-name');
+        if (savedActiveTeacher && tInput) {
+          tInput.value = savedActiveTeacher;
+        }
+
         populateDropdowns();
+        renderTeachersDirectory();
         renderAdminLists();
         renderAddedRows();
         renderArchive();
